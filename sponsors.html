@@ -43,9 +43,7 @@
       <div class="kicker"><span class="flag-dot" style="background:var(--green);"></span> PARTNERSHIPS</div>
       <h1>Sponsors</h1>
       <p>
-        JRAD Racing streams MX-5 Cup and GT3 on iRacing 2–3 nights a week,
-        with highlights going out on YouTube. Partner slots are open —
-        here's who's on board so far, and how to reach out.
+        I'm excited to partner with sponsors who share common values, mutual goals, and genuine passion for motorsport — especially brands whose products I truly love and rely on every time I hit the track. Partner slots are open; here's how to connect and get involved.
       </p>
     </div>
   </div>
@@ -79,44 +77,25 @@
       </div>
     </div>
 
-    <div class="contact-card" style="margin-bottom:80px;">
+    <div class="contact-card" style="margin-bottom:80px;text-align:center;">
       <h3>Become a sponsor</h3>
-      <p>Interested in partnering with JRAD Racing? Send a few details and I'll get back to you.</p>
+      <p style="margin-bottom:28px;">Interested in partnering with JRAD Racing?</p>
 
-      <!--
-        EDIT ME — HOOKING UP THE FORM
-        ==============================
-        This form needs a place to send submissions since the site has
-        no server. The easiest free option is Formspree:
-          1. Create a free account at formspree.io
-          2. Create a new form, copy the form ID it gives you
-             (looks like "https://formspree.io/f/abcd1234")
-          3. Replace YOUR_FORM_ID below with that ID
-        Until you do that, the form will show a friendly error instead
-        of silently losing messages — see the JS at the bottom of this
-        page for exactly where that's handled.
-      -->
-      <form id="sponsorForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-        <div class="field">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Your name" required>
+      <div style="padding:32px 24px;background:rgba(255,255,255,0.02);border:1px solid var(--line);margin-bottom:24px;">
+        <div style="font-family:'Big Shoulders Display',sans-serif;font-weight:900;font-size:clamp(26px,4.5vw,42px);line-height:1.15;color:var(--yellow);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:16px;">
+          REACH OUT ON DISCORD UNTIL EMAILING IS SET UP HERE
         </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@company.com" required>
-        </div>
-        <div class="field">
-          <label for="company">Company</label>
-          <input type="text" id="company" name="company" placeholder="Company name" required>
-        </div>
-        <div class="field">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" placeholder="Tell me about your sponsorship interest..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send message</button>
-        <p class="form-note">Or email directly: <a href="mailto:jrad@jradracing.com" style="color:var(--yellow);"><!-- EDIT ME: your real contact email -->jrad@jradracing.com</a></p>
-        <div id="formStatus" class="form-status" role="status"></div>
-      </form>
+        <p style="color:var(--paper);font-size:16px;max-width:50ch;margin:0 auto 24px;line-height:1.6;">
+          Whether you want to discuss livery spots, stream integrations, gear collaborations, or just connect and talk racing — the door is always open. Drop by the Discord and send a DM anytime!
+        </p>
+        <a class="btn btn-primary" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener" style="display:inline-flex;padding:12px 32px;font-size:15px;letter-spacing:0.06em;">
+          Connect on Discord
+        </a>
+      </div>
+
+      <p style="color:var(--muted);font-size:13.5px;font-family:'IBM Plex Mono';margin:0;">
+        Always excited to collaborate with brands, creators, and fellow sim racers who love motorsport.
+      </p>
     </div>
 
   </div>
@@ -150,39 +129,39 @@
   const links = document.getElementById('navLinks');
   toggle.addEventListener('click', () => links.classList.toggle('open'));
 
-  // Sponsor form: submits via fetch so the page never reloads.
-  // Requires a real Formspree endpoint in the form's action= (see
-  // the EDIT ME comment above the <form> tag in this file's source).
+  // Sponsor form handler (if form is present)
   const form = document.getElementById('sponsorForm');
   const status = document.getElementById('formStatus');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (form.action.includes('YOUR_FORM_ID')) {
-      status.textContent = 'Form isn\'t connected yet — see the EDIT ME comment near the top of the sponsor form in the page source, or just email directly using the link above.';
-      status.className = 'form-status err';
-      return;
-    }
-    status.textContent = 'Sending...';
-    status.className = 'form-status';
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        status.textContent = 'Message sent — thanks, I\'ll get back to you soon.';
-        status.className = 'form-status ok';
-        form.reset();
-      } else {
+  if (form && status) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form.action.includes('YOUR_FORM_ID')) {
+        status.textContent = 'Form isn\'t connected yet — see the EDIT ME comment near the top of the sponsor form in the page source, or just email directly using the link above.';
+        status.className = 'form-status err';
+        return;
+      }
+      status.textContent = 'Sending...';
+      status.className = 'form-status';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          status.textContent = 'Message sent — thanks, I\'ll get back to you soon.';
+          status.className = 'form-status ok';
+          form.reset();
+        } else {
+          status.textContent = 'Something went wrong sending that — try the email link above instead.';
+          status.className = 'form-status err';
+        }
+      } catch (err) {
         status.textContent = 'Something went wrong sending that — try the email link above instead.';
         status.className = 'form-status err';
       }
-    } catch (err) {
-      status.textContent = 'Something went wrong sending that — try the email link above instead.';
-      status.className = 'form-status err';
-    }
-  });
+    });
+  }
 </script>
 
 </body>

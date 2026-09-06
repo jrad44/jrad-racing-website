@@ -9,8 +9,8 @@
    standard 0=Sunday..6=Saturday. Hour/minute are 24-hour, Pacific time. */
 (function () {
   var RACE_RULES = [
-    { label: 'MX-5 Cup — race', day: 2, hour: 20, minute: 0 },  // Tuesday 8:00 PM
-    { label: 'GT3 — practice / race', day: 4, hour: 20, minute: 30 } // Thursday 8:30 PM
+    { label: 'Live stream', day: 3, hour: 9, minute: 30 },  // Wednesday 9:30 AM
+    { label: 'Live stream', day: 4, hour: 9, minute: 30 }  // Thursday 9:30 AM
   ];
 
   var PACIFIC_TZ = 'America/Los_Angeles';

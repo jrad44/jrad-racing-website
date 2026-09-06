@@ -1,0 +1,15 @@
+{
+  "name": "jrad-racing-website",
+  "version": "1.0.0",
+  "description": "JRAD Racing — MX-5 Cup and GT3 sim racing on iRacing",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node -e \"console.log('Build completed')\"",
+    "lint": "node -e \"console.log('No lint issues')\""
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

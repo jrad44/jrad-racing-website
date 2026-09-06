@@ -65,21 +65,18 @@
         </svg>
         <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
         <div class="hero-fade" aria-hidden="true"></div>
-        <div class="hero-scrub-hint mono" aria-hidden="true">drag / move mouse to scrub ↔</div>
-        <div class="hero-numberplate">48<span style="color:var(--muted);font-size:16px;">&nbsp;/&nbsp;</span>01</div>
+        <div class="hero-numberplate">#04</div>
       </div>
       <div class="wrap">
         <div class="hero-grid">
           <div>
             <div class="hero-eyebrow-row">
               <span class="flag-dot"></span>
-              <span>MX-5 CUP #48 &nbsp;·&nbsp; GT3 #01 &nbsp;·&nbsp; ON IRACING</span>
+              <span>MX5 &nbsp;·&nbsp; GT3 &nbsp;·&nbsp; ENDURANCE RACING &nbsp;·&nbsp; ON IRACING</span>
             </div>
-            <h1 class="hero-h">I race <em>after</em><br>the day job.</h1>
+            <h1 class="hero-h">STREAMING ONE <em>RACE</em><br>AT A TIME</h1>
             <p class="hero-sub">
-              JRAD Racing — MX-5 Cup and GT3 on iRacing. I'm on Twitch a couple
-              nights a week for full races, and the best of it lands on YouTube
-              for everyone who can't make the green flag live.
+              JRAD Racing - Streaming iRacing on Twitch & YouTube. Join the community for fun competitive racing, convos, tech, and much more! Weekly videos and best of it lands on Youtube for everyone who can't make the green flag live.
             </p>
             <div class="hero-ctas">
               <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener">Watch on Twitch</a>
@@ -97,11 +94,23 @@
       <div class="section-head">
         <div>
           <h2>On track this week</h2>
-          <p>Racing goes up 2–3 nights a week, shifted around a real job.</p>
         </div>
       </div>
 
-      <p class="tz-note" style="margin-top:-14px;">
+      <div class="countdown-box" id="raceCountdown" style="margin-top:10px;margin-bottom:28px;">
+        <div>
+          <div class="cd-label">Next race in</div>
+          <div class="cd-race" id="raceCountdownLabel">Loading schedule…</div>
+        </div>
+        <div class="countdown-clock" id="raceCountdownClock">
+          <div class="cd-unit"><div class="cd-num" id="cdDays">–</div><div class="cd-unit-label">Days</div></div>
+          <div class="cd-unit"><div class="cd-num" id="cdHours">–</div><div class="cd-unit-label">Hrs</div></div>
+          <div class="cd-unit"><div class="cd-num" id="cdMins">–</div><div class="cd-unit-label">Min</div></div>
+          <div class="cd-unit"><div class="cd-num" id="cdSecs">–</div><div class="cd-unit-label">Sec</div></div>
+        </div>
+      </div>
+
+      <p class="tz-note" style="margin-top:0;">
         ALL TIMES PACIFIC — updated weekly
       </p>
 
@@ -109,25 +118,25 @@
            just the condensed homepage version. Give a day-card class="is-off"
            to dim it if you're off that day. -->
       <div class="day-grid">
-        <div class="day-card">
+        <div class="day-card is-off">
           <h3>Tuesday</h3>
           <div class="slot">
-            <div class="slot-label">MX-5 Cup — race</div>
-            <div class="slot-time">8:00 PM</div>
+            <div class="slot-label">Status</div>
+            <div class="slot-time">Off</div>
           </div>
         </div>
         <div class="day-card">
           <h3>Wednesday</h3>
           <div class="slot">
-            <div class="slot-label">Off track</div>
-            <div class="slot-time" style="font-family:'IBM Plex Sans';font-size:16px;color:var(--muted);">Editing for YouTube</div>
+            <div class="slot-label">LIVE STREAM</div>
+            <div class="slot-time">9:30 AM</div>
           </div>
         </div>
         <div class="day-card">
           <h3>Thursday</h3>
           <div class="slot">
-            <div class="slot-label">GT3 — practice / race</div>
-            <div class="slot-time">8:30 PM</div>
+            <div class="slot-label">LIVE STREAM</div>
+            <div class="slot-time">9:30 AM</div>
           </div>
         </div>
         <div class="day-card is-off">
@@ -154,13 +163,10 @@
 
       <div class="board" style="margin-top:24px;">
         <div class="board-top">
-          <span>WHY THIS MOVES</span>
+          <span>TUNE IN EACH WEEK</span>
         </div>
         <div style="padding:22px;color:var(--muted);font-size:15px;">
-          Work schedule comes first — this board gets updated at the start
-          of each week, and Discord gets a heads-up if something changes
-          last minute. The fastest way to know for sure: follow on Twitch
-          and turn on notifications.
+          TUNE IN TO THE LIVE STREAM ON TWITCH AND YOUTUBE! Streaming schedule changes weekly.
         </div>
         <div class="board-foot">
           <span>Live countdown to the next race lives on the full schedule.</span>
@@ -183,13 +189,13 @@
       <!-- MX-5 CUP BLOCK -->
       <div class="class-block">
         <div class="class-head">
-          <h3>MX-5 Cup</h3>
+          <h3>MX5 Races</h3>
           <span class="class-tag tag-mx5">Car #48</span>
         </div>
         <div class="class-body">
           <img class="class-hero-img" src="assets/mx5-yellow.jpg" alt="Yellow and black JRAD Racing Mazda MX-5 Cup car, #48">
           <div class="class-info">
-            <div class="car-number n-mx5">48</div>
+            <div class="car-number n-mx5" style="font-size:clamp(30px, 3.4vw, 44px);">MX5 Races</div>
             <p>
               The neon build is the one you'll see most — high-contrast,
               easy to spot mid-pack, hard to miss in a photo finish.
@@ -206,13 +212,13 @@
       <!-- GT3 BLOCK -->
       <div class="class-block">
         <div class="class-head">
-          <h3>GT3</h3>
+          <h3>GT3 Races</h3>
           <span class="class-tag tag-gt3">Car #01</span>
         </div>
         <div class="class-body">
           <img class="class-hero-img" src="assets/gt3-porsche-green.jpg" alt="Green topographic livery Porsche 911 GT3, #01">
           <div class="class-info">
-            <div class="car-number n-gt3">01</div>
+            <div class="car-number n-gt3" style="font-size:clamp(30px, 3.4vw, 44px);">GT3 Races</div>
             <p>
               GT3 nights run the green topo scheme across whatever the field
               calls for — Porsche 911 GT3 R or BMW M4 GT3, same #01, same
@@ -232,23 +238,13 @@
     <div class="wrap">
       <div class="panel-label">
         <h2>Live from the pit wall</h2>
-        <span class="mono" id="latestVideoMeta">Most recent upload — auto-pulled from YouTube</span>
+        <span class="mono" id="latestVideoMeta">"Nurburgring 24hr - Porsche GT3 2nd half" — Latest live stream</span>
       </div>
       <div class="player-frame">
-        <!--
-          EDIT ME: this used to be the live Twitch embed, but a live embed
-          shows a blank/offline screen most of the time and that's a bad
-          first impression. It now auto-loads your most recent YouTube
-          upload instead (via assets/youtube-feed.js), so there's always
-          something watchable here, live or not.
-
-          Requires YOUTUBE_CHANNEL_ID to be set in assets/youtube-feed.js —
-          see the comment at the top of that file for how to find it.
-        -->
         <iframe
           id="latestVideoFrame"
-          src=""
-          title="Most recent JRAD Racing video"
+          src="https://www.youtube.com/embed/sUui-hHkOJ8"
+          title="Most recent JRAD Racing live stream — Nurburgring 24hr - Porsche GT3 2nd half"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
         </iframe>
@@ -262,25 +258,36 @@
       <div class="section-head">
         <div>
           <h2>Recent uploads</h2>
-          <p>Pulled straight from YouTube — no manual updates needed.</p>
+          <p>Recent streams and videos from @Jradracing.</p>
         </div>
       </div>
       <div class="video-grid" id="recentVideosGrid">
-        <!-- EDIT ME: this grid is populated automatically by
-             assets/youtube-feed.js. These three cards are just a
-             loading/fallback state shown until that fetch resolves
-             (or if it fails, e.g. offline / feed unreachable). -->
-        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
-          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        <a class="video-card" href="https://www.youtube.com/watch?v=sUui-hHkOJ8" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap">
+            <img src="https://i.ytimg.com/vi/sUui-hHkOJ8/hqdefault.jpg" alt="Nurburgring 24hr - Porsche GT3 2nd half" loading="lazy">
+          </div>
+          <div class="video-card-body">
+            <h4>Nurburgring 24hr - Porsche GT3 2nd half</h4>
+            <span class="video-date">May 2, 2026</span>
+          </div>
         </a>
-        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
-          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        <a class="video-card" href="https://www.youtube.com/watch?v=bLE-Au1MkFc" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap">
+            <img src="https://i.ytimg.com/vi/bLE-Au1MkFc/hqdefault.jpg" alt="Nurburgring 24hr - Porsche GT3 Stint 1" loading="lazy">
+          </div>
+          <div class="video-card-body">
+            <h4>Nurburgring 24hr - Porsche GT3 Stint 1</h4>
+            <span class="video-date">May 2, 2026</span>
+          </div>
         </a>
-        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
-          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        <a class="video-card" href="https://www.youtube.com/watch?v=WI00u9YPLrM" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap">
+            <img src="https://i.ytimg.com/vi/WI00u9YPLrM/hqdefault.jpg" alt="Lets Race! iRacing" loading="lazy">
+          </div>
+          <div class="video-card-body">
+            <h4>Lets Race! iRacing</h4>
+            <span class="video-date">Mar 6, 2026</span>
+          </div>
         </a>
       </div>
     </div>
@@ -338,7 +345,7 @@
         <img class="about-photo" src="assets/driver-headshot.jpg" alt="Jared, JRAD Racing">
         <div class="about-text">
           <!-- EDIT ME: swap in your own bio, keep it a couple short paragraphs -->
-          <p><strong>I'm Jared</strong> — JRAD Racing is where the day job ends and the race weekend starts. iRacing's been the outlet for a while now: MX-5 Cup for the close, scrappy racing, GT3 for the longer, more technical stints.</p>
+          <p>I've been sim racing since 2023. iRacing's been the outlet for a while now. MX-5 has been one of my favorite cars to drive. It's scrappy and close racing really makes for fun enjoyable races. GT3 is equally some of my favorite racing and has caused me to grow considerably. You'll also catch me doing Endurance team races like N24, Bathurst 12hr and LeMans 24hr.</p>
           <p>The stream is the real thing — full sessions, mistakes included. YouTube is where the highlights, onboard clips, and setup breakdowns end up for anyone who'd rather watch the short version. Building this out one race week at a time.</p>
         </div>
       </div>
@@ -378,6 +385,7 @@
 
 <script src="assets/site-fx.js" defer></script>
 <script src="assets/twitch-live.js" defer></script>
+<script src="assets/race-countdown.js" defer></script>
 <script src="assets/youtube-feed.js" defer></script>
 
 <script>

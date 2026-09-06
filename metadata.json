@@ -1,0 +1,8 @@
+{
+  "name": "JRAD Racing",
+  "description": "JRAD Racing — MX-5 Cup and GT3 sim racing on iRacing. Live on Twitch, highlights on YouTube.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
