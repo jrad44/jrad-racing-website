@@ -123,6 +123,7 @@
     display:flex;
     align-items:center;
     overflow:hidden;
+    touch-action:pan-y;
   }
   /* Pull the hero copy toward the true left edge of the viewport instead of
      sitting inside the same centered 1180px column as the rest of the
@@ -133,6 +134,7 @@
     margin:0;
     padding-left:clamp(24px, 6vw, 88px);
     padding-right:24px;
+    touch-action:pan-y;
   }
   .hero-grid{
     display:grid;
@@ -142,7 +144,8 @@
     position:relative;
     z-index:2;
     width:100%;
-    pointer-events:none;
+    pointer-events:auto;
+    touch-action:pan-y;
   }
   .hero-eyebrow-row{
     display:flex;align-items:center;gap:10px;
@@ -165,22 +168,21 @@
     margin:22px 0 30px;
   }
   .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
-  /* .hero-grid is pointer-events:none so its full-width invisible box
-     doesn't sit on top of the video and swallow mouse/touch scrub events —
-     re-enable it only on the actual clickable links. */
   .hero-grid a{pointer-events:auto;}
 
-  /* Video bleeds behind/beside the copy, fading into the asphalt background
-     instead of sitting in its own framed box. */
+  /* Background video and canvas layer are purely visual background elements.
+     Setting pointer-events:none ensures touch events never get trapped by the
+     video or canvas, giving 100% fluid, unrestricted vertical scrolling
+     anywhere a user touches (text, buttons, middle, or photo). */
   .hero-photo-wrap{
     position:absolute;
     inset:0;
     z-index:0;
     touch-action:pan-y;
-    pointer-events:auto;
+    pointer-events:none;
   }
   /* Checkered flag loop fills the empty left side, purely decorative —
-     no pointer events, so it never competes with the scrub area. */
+     no pointer events, so it never competes with touch or mouse events. */
   .hero-flag-wrap{
     position:absolute;
     top:0;left:0;
@@ -199,6 +201,7 @@
     opacity:0.55;
     -webkit-mask-image:linear-gradient(to right, black 45%, transparent 92%);
     mask-image:linear-gradient(to right, black 45%, transparent 92%);
+    pointer-events:none;
   }
   .blob-bg{
     position:absolute;
@@ -206,6 +209,7 @@
     width:62%;height:84%;
     z-index:0;
     opacity:0.7;
+    pointer-events:none;
   }
   .blob-bg path{fill:var(--yellow);opacity:0.12;}
   .hero-photo{
@@ -217,14 +221,17 @@
     width:64%;
     object-fit:cover;
     object-position:center top;
+    pointer-events:none;
+    touch-action:pan-y;
   }
   video.hero-photo,
   canvas.hero-photo{
     background:transparent;
-    filter:grayscale(1) contrast(1.12) brightness(0.82);
+    filter:grayscale(1) contrast(1.08) brightness(1.02);
     mix-blend-mode:screen;
-    opacity:0.85;
-    cursor:ew-resize;
+    opacity:0.92;
+    pointer-events:none;
+    touch-action:pan-y;
     -webkit-mask-image:linear-gradient(to right, transparent 0%, black 42%);
     mask-image:linear-gradient(to right, transparent 0%, black 42%);
   }
@@ -259,6 +266,7 @@
     padding:8px 14px;
     font-family:'Big Shoulders Display';font-weight:800;font-size:26px;
     color:var(--yellow);
+    pointer-events:none;
   }
 
   .player-panel{
@@ -347,8 +355,8 @@
     .class-body{grid-template-columns:1fr;}
     .class-hero-img{border-right:0;border-bottom:1px solid var(--line);min-height:220px;}
     .hero-top{min-height:clamp(460px, 78vh, 620px);}
-    .hero-photo{width:100%;opacity:0.5;}
-    video.hero-photo{opacity:0.55;}
+    .hero-photo{width:100%;opacity:0.68;}
+    video.hero-photo{opacity:0.72;}
     .hero-flag-wrap{width:100%;opacity:0.35;}
     .hero-flag-video{mask-image:linear-gradient(to bottom, black 40%, transparent 92%);-webkit-mask-image:linear-gradient(to bottom, black 40%, transparent 92%);}
     .hero-fade{
