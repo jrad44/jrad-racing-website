@@ -114,4 +114,72 @@
       revealEls.forEach(function (el) { el.classList.add('is-visible'); });
     }
   }
+
+  /* ---------- 5. Dynamic nav links active state ---------- */
+  var navList = document.getElementById('navLinks');
+  if (navList) {
+    var navLinks = navList.querySelectorAll('a');
+    var path = (window.location.pathname || '').replace(/\/$/, '') || '/';
+    var file = path.split('/').pop() || 'index.html';
+    var isHome = file === '' || file === 'index.html';
+
+    navLinks.forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      var clean = href.split('#')[0].replace(/^\.\//, '');
+      var hash = href.indexOf('#') !== -1 ? href.slice(href.indexOf('#')) : '';
+
+      if (!isHome && clean && (file === clean || path.endsWith('/' + clean))) {
+        a.classList.add('active');
+        a.setAttribute('aria-current', 'page');
+      } else if (isHome && !hash) {
+        // Page links on home page are gray
+        a.classList.remove('active', 'is-active');
+        a.removeAttribute('aria-current');
+      }
+
+      a.addEventListener('click', function () {
+        if (hash) {
+          navLinks.forEach(function (o) { o.classList.remove('active', 'is-active'); });
+          a.classList.add('active');
+        }
+      });
+    });
+
+    if (isHome) {
+      var sectionIds = ['#garage', '#crew', '#about'];
+      var sections = sectionIds.map(function (id) {
+        return document.querySelector(id);
+      }).filter(Boolean);
+
+      if (sections.length && 'IntersectionObserver' in window) {
+        var secIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var hashId = '#' + entry.target.id;
+              navLinks.forEach(function (a) {
+                var h = a.getAttribute('href') || '';
+                if (h === hashId || h.endsWith(hashId)) {
+                  a.classList.add('active');
+                } else if (h.indexOf('#') !== -1) {
+                  a.classList.remove('active', 'is-active');
+                }
+              });
+            }
+          });
+        }, { threshold: 0.35 });
+
+        sections.forEach(function (sec) { secIo.observe(sec); });
+
+        window.addEventListener('scroll', function () {
+          if (window.scrollY < 200) {
+            navLinks.forEach(function (a) {
+              if ((a.getAttribute('href') || '').indexOf('#') !== -1) {
+                a.classList.remove('active', 'is-active');
+              }
+            });
+          }
+        }, { passive: true });
+      }
+    }
+  }
 })();
