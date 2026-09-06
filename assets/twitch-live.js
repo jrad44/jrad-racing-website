@@ -13,26 +13,41 @@
 (function () {
   var TWITCH_CHANNEL = 'jradracing';
 
+  window.isTwitchLive = false;
+  window.hasTwitchStreamedToday = false;
+
   var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-watch-live]'));
-  if (!buttons.length) return;
 
   var LABEL_DEFAULT = buttons.map(function (b) { return b.innerHTML; });
 
-  function setState(state) {
+  function setLiveState(isLive) {
+    window.isTwitchLive = Boolean(isLive);
+    if (isLive) {
+      window.hasTwitchStreamedToday = true;
+    }
+
     buttons.forEach(function (btn, i) {
       btn.classList.remove('is-live', 'is-offline');
-      if (state === 'live') {
+      if (isLive) {
         btn.classList.add('is-live');
         btn.innerHTML = '<span class="live-dot"></span> LIVE NOW';
-      } else if (state === 'offline') {
+      } else {
         btn.classList.add('is-offline');
         btn.textContent = 'Offline';
-      } else {
-        // unknown / not yet determined — leave the original "Watch Live" label
-        btn.innerHTML = LABEL_DEFAULT[i];
       }
     });
+
+    try {
+      window.dispatchEvent(new CustomEvent('twitch-status-change', {
+        detail: { isLive: Boolean(isLive) }
+      }));
+    } catch (e) {}
   }
+
+  // Developer / test helper
+  window.setSimulatedTwitchStatus = function (isLive) {
+    setLiveState(isLive);
+  };
 
   // Hidden host element for the status-checking player. It still has to be
   // a real element in the document (Twitch's SDK renders into it), just
@@ -55,14 +70,25 @@
       controls: false
     });
 
-    player.addEventListener(Twitch.Player.ONLINE, function () { setState('live'); });
-    player.addEventListener(Twitch.Player.OFFLINE, function () { setState('offline'); });
+    player.addEventListener(Twitch.Player.ONLINE, function () { setLiveState(true); });
+    player.addEventListener(Twitch.Player.OFFLINE, function () { setLiveState(false); });
+    player.addEventListener(Twitch.Player.PLAY, function () { setLiveState(true); });
+    player.addEventListener(Twitch.Player.ENDED, function () { setLiveState(false); });
+
+    player.addEventListener(Twitch.Player.READY, function () {
+      setTimeout(function () {
+        try {
+          if (typeof player.isPaused === 'function' && !player.isPaused()) {
+            setLiveState(true);
+          }
+        } catch (e) {}
+      }, 1200);
+    });
 
     // Fallback: if neither event has fired after a few seconds (slow
-    // network, ad blocker, etc.) just leave the default "Watch Live" label
-    // rather than showing something stale/wrong.
+    // network, ad blocker, etc.) leave the default label rather than showing something stale
     setTimeout(function () {
-      // no-op placeholder for future retry logic if ever needed
+      // no-op placeholder
     }, 8000);
   }
 

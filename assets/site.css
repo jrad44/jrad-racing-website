@@ -176,7 +176,7 @@
     position:absolute;
     inset:0;
     z-index:0;
-    touch-action:none;
+    touch-action:pan-y;
     pointer-events:auto;
   }
   /* Checkered flag loop fills the empty left side, purely decorative —
@@ -218,7 +218,8 @@
     object-fit:cover;
     object-position:center top;
   }
-  video.hero-photo{
+  video.hero-photo,
+  canvas.hero-photo{
     background:transparent;
     filter:grayscale(1) contrast(1.12) brightness(0.82);
     mix-blend-mode:screen;
@@ -821,10 +822,102 @@ html.fx-has-cursor, html.fx-has-cursor *{cursor:none !important;}
   text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;
 }
 .countdown-box.is-now .cd-race{color:var(--green);}
+.countdown-box.is-live{
+  border-color:var(--yellow);
+  box-shadow:0 0 32px rgba(217,255,63,0.14);
+}
+.countdown-box.is-live .cd-race{
+  color:var(--yellow);
+}
+.cd-live-badge-wrap{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.cd-live-indicator{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:900;
+  font-size:24px;
+  letter-spacing:0.04em;
+  color:var(--yellow);
+  background:rgba(217,255,63,0.1);
+  border:1px solid rgba(217,255,63,0.3);
+  padding:8px 18px;
+}
+.cd-live-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--yellow);
+  box-shadow:0 0 10px var(--yellow);
+  animation:cdLivePulse 1.4s infinite ease-in-out;
+}
+@keyframes cdLivePulse{
+  0%, 100% { transform:scale(1); opacity:1; }
+  50% { transform:scale(1.4); opacity:0.4; }
+}
+.cd-live-action-btn{
+  padding:10px 24px;
+  font-size:14px;
+  letter-spacing:0.06em;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+/* Delayed stream status (1+ hours past scheduled time without stream live) */
+.countdown-box.is-delayed{
+  border-color:rgba(255, 175, 40, 0.5);
+  box-shadow:0 0 28px rgba(255, 175, 40, 0.08);
+}
+.countdown-box.is-delayed .cd-label{
+  color:#ffb833;
+}
+.countdown-box.is-delayed .cd-race{
+  color:var(--paper);
+}
+.cd-delayed-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:10px;
+}
+.cd-delayed-note{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13.5px;
+  color:var(--muted);
+  text-align:right;
+}
+.cd-delayed-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cd-delayed-btn{
+  padding:8px 18px;
+  font-size:13px;
+  letter-spacing:0.04em;
+}
+
+/* Starting soon state (0 to 60 minutes after scheduled time) */
+.countdown-box.is-starting{
+  border-color:rgba(217,255,63,0.35);
+}
+.countdown-box.is-starting .cd-race{
+  color:var(--yellow);
+}
+
 @media (max-width:600px){
   .countdown-box{padding:22px 20px;}
   .countdown-clock{gap:14px;}
   .countdown-clock .cd-num{font-size:28px;}
+  .cd-delayed-wrap{align-items:flex-start;}
+  .cd-delayed-note{text-align:left;}
 }
 
 /* ============================================================

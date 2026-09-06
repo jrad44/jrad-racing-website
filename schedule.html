@@ -50,10 +50,10 @@
   </div>
 
   <div class="wrap" style="padding-top:44px;">
-    <!-- EDIT ME: live ticking countdown to the next race, computed client-side
-         in assets/race-countdown.js from the day/time rule (next Tuesday
-         8:00 PM Pacific = MX-5 Cup, next Thursday 8:30 PM Pacific = GT3).
-         Update RACE_RULES in that file if days/times ever change. -->
+    <!-- LIVE COUNTDOWN: Automatically calculates time to the next stream based on the
+         active days/times in the schedule grid below (or window.JRAD_SCHEDULE).
+         Handles starting soon notices, 1-hour delay alerts with Twitch/Discord links,
+         automatic rollover to the next stream, and live Twitch status. -->
     <div class="countdown-box" id="raceCountdown">
       <div>
         <div class="cd-label">Next race in</div>
@@ -72,10 +72,12 @@
     </p>
 
     <!--
-      EDIT ME: this whole grid. Each .day-card is one day. Duplicate a
-      .slot div inside a card if a day has two sessions (like a race +
-      a practice). Give a day class="day-card is-off" if you're off
-      that day — it dims the time text automatically.
+      EDIT ME: this whole grid. Each .day-card is one day.
+      - Change times: e.g. "9:30 AM", "7:00 PM", "2:30 PM".
+      - Add days: e.g. Friday, Saturday, Monday — duplicate any .day-card.
+      - Take a day off: add class="is-off" to .day-card or set time to "Off".
+      - Multiple sessions in one day: duplicate the .slot div inside the card.
+      The countdown timer above automatically reads this grid and calculates next stream!
     -->
     <div class="day-grid">
       <div class="day-card is-off">

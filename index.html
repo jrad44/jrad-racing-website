@@ -65,6 +65,7 @@
           </path>
         </svg>
         <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
+        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" style="display:none;" aria-hidden="true"></canvas>
         <div class="hero-fade" aria-hidden="true"></div>
         <div class="hero-numberplate">#04</div>
       </div>
@@ -98,6 +99,10 @@
         </div>
       </div>
 
+      <!-- LIVE COUNTDOWN: Automatically calculates time to next stream based on the
+           days/times in the schedule grid below (or window.JRAD_SCHEDULE).
+           Handles starting soon notices, 1-hour delay alerts with Twitch/Discord links,
+           automatic rollover to the next stream, and live Twitch status. -->
       <div class="countdown-box" id="raceCountdown" style="margin-top:10px;margin-bottom:28px;">
         <div>
           <div class="cd-label">Next race in</div>
@@ -399,32 +404,155 @@
 </script>
 
 <script>
-  // ===== Hero video scrub: mousemove/touchmove drags playhead instead of playing =====
+  // ===== Hero Animation: Desktop mouse scrubs video; Touchscreen scrolls scrub canvas at 60fps =====
   (function () {
     const video = document.getElementById('heroScrubVideo');
-    const wrap = document.querySelector('.hero-photo-wrap');
-    if (!video) return;
+    const canvas = document.getElementById('heroScrubCanvas');
+    const heroSection = document.querySelector('.hero');
+    if (!video || !canvas) return;
 
-    const SENSITIVITY = 0.8;
+    const ctx = canvas.getContext('2d');
+    const TOTAL_FRAMES = 121;
+    const frameImages = new Array(TOTAL_FRAMES + 1);
+    let framesPreloaded = false;
+    let lastRenderedFrame = 1;
 
-    let prevX = null;
-    let targetTime = 0;
-    let isSeeking = false;
-    let ready = false;
+    function getFrameSrc(index) {
+      const pad = index < 10 ? '00' + index : (index < 100 ? '0' + index : '' + index);
+      return 'assets/hero-frames/frame_' + pad + '.webp';
+    }
+
+    function renderCanvasFrame(targetIndex) {
+      if (!ctx) return;
+      let img = frameImages[targetIndex];
+      // If requested frame hasn't finished loading yet, find the closest available frame
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        for (let diff = 1; diff <= TOTAL_FRAMES; diff++) {
+          const prev = targetIndex - diff;
+          if (prev >= 1 && frameImages[prev] && frameImages[prev].complete && frameImages[prev].naturalWidth > 0) {
+            img = frameImages[prev];
+            break;
+          }
+          const next = targetIndex + diff;
+          if (next <= TOTAL_FRAMES && frameImages[next] && frameImages[next].complete && frameImages[next].naturalWidth > 0) {
+            img = frameImages[next];
+            break;
+          }
+        }
+      }
+
+      if (img && img.complete && img.naturalWidth > 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        lastRenderedFrame = targetIndex;
+      }
+    }
+
+    // Immediately load and paint frame 1 for instant display on touch screens
+    const frame1 = new Image();
+    frame1.src = getFrameSrc(1);
+    frame1.onload = () => {
+      frameImages[1] = frame1;
+      renderCanvasFrame(1);
+    };
+
+    function startPreloadingFrames() {
+      if (framesPreloaded) return;
+      framesPreloaded = true;
+
+      // Phase 1: Load every 4th frame first for quick availability across entire scroll range
+      for (let i = 1; i <= TOTAL_FRAMES; i += 4) {
+        if (!frameImages[i]) {
+          const img = new Image();
+          img.src = getFrameSrc(i);
+          const idx = i;
+          img.onload = () => { frameImages[idx] = img; };
+        }
+      }
+
+      // Phase 2: Load all remaining frames
+      for (let i = 1; i <= TOTAL_FRAMES; i++) {
+        if (!frameImages[i]) {
+          const img = new Image();
+          img.src = getFrameSrc(i);
+          const idx = i;
+          img.onload = () => { frameImages[idx] = img; };
+        }
+      }
+    }
 
     function clamp(val, min, max) {
       return Math.min(Math.max(val, min), max);
     }
 
-    function requestSeek(time) {
+    // Touchscreen detection
+    const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches;
+    let isTouchDevice = isCoarse || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    function switchToTouchCanvas() {
+      isTouchDevice = true;
+      canvas.style.display = 'block';
+      video.style.display = 'none';
+      startPreloadingFrames();
+      updateTouchScroll();
+    }
+
+    if (isTouchDevice) {
+      switchToTouchCanvas();
+    }
+
+    // Window touchstart ensures any touch device switches to the butter-smooth canvas instantly
+    window.addEventListener('touchstart', () => {
+      if (!isTouchDevice || canvas.style.display !== 'block') {
+        switchToTouchCanvas();
+      }
+    }, { passive: true });
+
+    // --- Touchscreen: Silky 60fps frame painting on scroll ---
+    let scrollRaf = null;
+    function updateTouchScroll() {
+      if (!isTouchDevice) return;
+      const hero = heroSection || document.querySelector('.hero');
+      const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+      const scrollRange = Math.max(heroHeight - 60, 320);
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const progress = clamp(scrollY / scrollRange, 0, 1);
+      const targetFrame = clamp(Math.round(progress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
+
+      if (targetFrame !== lastRenderedFrame) {
+        renderCanvasFrame(targetFrame);
+      }
+    }
+
+    function onTouchScroll() {
+      if (!isTouchDevice) return;
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = null;
+        updateTouchScroll();
+      });
+    }
+
+    window.addEventListener('scroll', onTouchScroll, { passive: true });
+    window.addEventListener('touchmove', onTouchScroll, { passive: true });
+    window.addEventListener('resize', onTouchScroll, { passive: true });
+
+    // --- Desktop: Mouse tracking using HTML5 Video ---
+    const SENSITIVITY = 0.8;
+    let prevX = null;
+    let targetTime = 0;
+    let isSeeking = false;
+    let videoReady = false;
+
+    function requestVideoSeek(time) {
       targetTime = clamp(time, 0, video.duration || 0);
-      if (isSeeking) return; // already mid-seek; onSeeked will pick up the latest targetTime
+      if (isSeeking) return;
       isSeeking = true;
       video.currentTime = targetTime;
     }
 
-    function applyDelta(currentX) {
-      if (!ready || !video.duration) {
+    function applyMouseDelta(currentX) {
+      if (!videoReady || !video.duration) {
         prevX = currentX;
         return;
       }
@@ -436,51 +564,31 @@
       prevX = currentX;
 
       const timeOffset = (delta / window.innerWidth) * SENSITIVITY * video.duration;
-      requestSeek(targetTime + timeOffset);
+      requestVideoSeek(targetTime + timeOffset);
     }
 
     video.addEventListener('loadedmetadata', () => {
-      ready = true;
+      videoReady = true;
       video.pause();
-      // Park on the first frame until the user starts scrubbing.
-      requestSeek(0);
+      requestVideoSeek(0);
     });
 
     video.addEventListener('seeked', () => {
       isSeeking = false;
-      // If the target moved again while we were seeking, chase it now —
-      // this is what stops rapid mousemoves/touchmoves from flooding the video element.
       if (Math.abs(video.currentTime - targetTime) > 0.008) {
-        requestSeek(targetTime);
+        requestVideoSeek(targetTime);
       }
     });
 
-    // --- Mouse (desktop) ---
-    window.addEventListener('mousemove', (e) => applyDelta(e.clientX));
+    window.addEventListener('mousemove', (e) => {
+      if (isTouchDevice) return;
+      applyMouseDelta(e.clientX);
+    });
 
-    // Reset the drag baseline when the pointer re-enters the window so the
-    // first move after a gap doesn't register a huge fake delta.
-    window.addEventListener('mouseenter', () => { prevX = null; });
-
-    // --- Touch (mobile/tablet) ---
-    // Scoped to the hero photo element itself so scrubbing there doesn't
-    // hijack scrolling anywhere else on the page.
-    const touchTarget = wrap || video;
-    touchTarget.addEventListener('touchstart', (e) => {
-      if (e.touches.length !== 1) return;
-      prevX = e.touches[0].clientX;
-    }, { passive: true });
-
-    touchTarget.addEventListener('touchmove', (e) => {
-      if (e.touches.length !== 1) return;
-      // We're taking over horizontal drag on this element, so stop the
-      // page from scrolling while the user is scrubbing.
-      e.preventDefault();
-      applyDelta(e.touches[0].clientX);
-    }, { passive: false });
-
-    touchTarget.addEventListener('touchend', () => { prevX = null; });
-    touchTarget.addEventListener('touchcancel', () => { prevX = null; });
+    window.addEventListener('mouseenter', () => {
+      if (isTouchDevice) return;
+      prevX = null;
+    });
   })();
 </script>
 
