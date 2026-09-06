@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule — JRAD Racing</title>
+<meta name="description" content="JRAD Racing stream schedule — MX-5 Cup and GT3 on iRacing.">
+<link rel="icon" type="image/png" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark">
+      <span class="brand-word">JRAD<span>RACING</span></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#garage">Garage</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="trophy.html">Trophy Room</a></li>
+      <li><a href="gear.html">Gear</a></li>
+      <li><a href="sponsors.html">Sponsors</a></li>
+      <li><a href="index.html#crew">Crew</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a>
+      <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener" data-watch-live>Watch Live</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-header">
+      <div class="kicker"><span class="flag-dot"></span> WEEKLY SCHEDULE</div>
+      <h1>On track this week</h1>
+      <p>
+        Racing goes up 2–3 nights a week, built around a real day job — so days
+        shift more than most schedules. This page is the plan; Twitch always
+        has the live truth if plans move.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:44px;">
+    <!-- EDIT ME: live ticking countdown to the next race, computed client-side
+         in assets/race-countdown.js from the day/time rule (next Tuesday
+         8:00 PM Pacific = MX-5 Cup, next Thursday 8:30 PM Pacific = GT3).
+         Update RACE_RULES in that file if days/times ever change. -->
+    <div class="countdown-box" id="raceCountdown">
+      <div>
+        <div class="cd-label">Next race in</div>
+        <div class="cd-race" id="raceCountdownLabel">Loading schedule…</div>
+      </div>
+      <div class="countdown-clock" id="raceCountdownClock">
+        <div class="cd-unit"><div class="cd-num" id="cdDays">–</div><div class="cd-unit-label">Days</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdHours">–</div><div class="cd-unit-label">Hrs</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdMins">–</div><div class="cd-unit-label">Min</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdSecs">–</div><div class="cd-unit-label">Sec</div></div>
+      </div>
+    </div>
+
+    <p class="tz-note" style="margin-top:0;">
+      ALL TIMES PACIFIC — updated weekly
+    </p>
+
+    <!--
+      EDIT ME: this whole grid. Each .day-card is one day. Duplicate a
+      .slot div inside a card if a day has two sessions (like a race +
+      a practice). Give a day class="day-card is-off" if you're off
+      that day — it dims the time text automatically.
+    -->
+    <div class="day-grid">
+      <div class="day-card">
+        <h3>Tuesday</h3>
+        <div class="slot">
+          <div class="slot-label">MX-5 Cup — race</div>
+          <div class="slot-time">8:00 PM</div>
+        </div>
+      </div>
+      <div class="day-card">
+        <h3>Wednesday</h3>
+        <div class="slot">
+          <div class="slot-label">Off track</div>
+          <div class="slot-time" style="font-family:'IBM Plex Sans';font-size:16px;color:var(--muted);">Editing for YouTube</div>
+        </div>
+      </div>
+      <div class="day-card">
+        <h3>Thursday</h3>
+        <div class="slot">
+          <div class="slot-label">GT3 — practice / race</div>
+          <div class="slot-time">8:30 PM</div>
+        </div>
+      </div>
+      <div class="day-card is-off">
+        <h3>Friday</h3>
+        <div class="slot">
+          <div class="slot-label">Status</div>
+          <div class="slot-time">Off</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="extra-row">
+      <div class="extra-card">
+        <div class="icon">🎥</div>
+        <h3>New video</h3>
+        <div class="slot-time" style="font-family:'Big Shoulders Display';color:var(--green);font-size:22px;">Most weekends</div>
+      </div>
+      <div class="extra-card">
+        <div class="icon">🏁</div>
+        <h3>Weekend racing</h3>
+        <div class="slot-time" style="font-family:'Big Shoulders Display';color:var(--green);font-size:22px;">Confirmed on Twitch/Discord</div>
+      </div>
+    </div>
+
+    <div class="board" style="margin-top:0;margin-bottom:70px;">
+      <div class="board-top">
+        <span>WHY THIS MOVES</span>
+      </div>
+      <div style="padding:22px;color:var(--muted);font-size:15px;">
+        Work schedule comes first — this board gets updated at the start of
+        each week, and Discord gets a heads-up if something changes last
+        minute. The fastest way to know for sure: follow on Twitch and
+        turn on notifications.
+      </div>
+      <div class="board-foot">
+        <span></span>
+        <a href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Get schedule alerts on Discord →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a href="index.html" class="brand">
+        <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark" style="height:20px;">
+        <span class="brand-word" style="font-size:16px;">JRAD<span>RACING</span></span>
+      </a>
+      <ul class="foot-links">
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="trophy.html">Trophy Room</a></li>
+        <li><a href="gear.html">Gear</a></li>
+        <li><a href="sponsors.html">Sponsors</a></li>
+        <li><a href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a></li>
+      </ul>
+      <span class="foot-copy">© <span id="year"></span> JRAD Racing</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site-fx.js" defer></script>
+<script src="assets/twitch-live.js" defer></script>
+<script src="assets/race-countdown.js" defer></script>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+</script>
+
+</body>
+</html>

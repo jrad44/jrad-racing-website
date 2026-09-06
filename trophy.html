@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trophy Room — JRAD Racing</title>
+<meta name="description" content="JRAD Racing results and achievements on iRacing.">
+<link rel="icon" type="image/png" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark">
+      <span class="brand-word">JRAD<span>RACING</span></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#garage">Garage</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="trophy.html">Trophy Room</a></li>
+      <li><a href="gear.html">Gear</a></li>
+      <li><a href="sponsors.html">Sponsors</a></li>
+      <li><a href="index.html#crew">Crew</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a>
+      <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener" data-watch-live>Watch Live</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-header">
+      <div class="kicker"><span class="flag-dot" style="background:var(--yellow);box-shadow:0 0 0 3px rgba(217,255,63,0.18);"></span> RESULTS</div>
+      <h1>Trophy room</h1>
+      <p>
+        Every result that's actually gone up on the board — nothing here
+        that hasn't been raced for. This page grows one event at a time.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:44px;">
+
+    <!--
+      ============================================================
+      EDIT ME: HOW THIS PAGE WORKS
+      ============================================================
+      There are two blocks below:
+
+      1. "achievements" — a grid of one-off honors (a series win, a
+         podium, a personal best). Copy one .trophy-card to add a new
+         one. Delete the is-sample example cards once you have real
+         ones to replace them with.
+
+      2. "event log" — a running table for a series you race
+         repeatedly (like your weekly MX-5 Cup official races or a
+         GT3 league). Copy a <tr> to log a new race. Add a new
+         .results-table-wrap block entirely for a different series.
+
+      Nothing on this page should describe a result that didn't
+      happen — an empty section with the sample removed is a more
+      honest look than a padded one.
+    -->
+
+    <div class="section-head" style="border-bottom:0;padding-bottom:0;margin-bottom:26px;">
+      <div><h2 style="font-size:26px;">Achievements</h2></div>
+    </div>
+
+    <div class="trophy-grid">
+      <!-- EDIT ME: replace this sample card with your first real one, or delete it -->
+      <div class="trophy-card is-sample">
+        <span class="sample-tag">SAMPLE — replace me</span>
+        <span class="medal">🏆</span>
+        <h4>MX-5 Cup official race win</h4>
+        <span class="year">Add the date here</span>
+      </div>
+      <div class="trophy-card is-sample">
+        <span class="sample-tag">SAMPLE — replace me</span>
+        <span class="medal">🥉</span>
+        <h4>GT3 endurance podium</h4>
+        <span class="year">Add the date here</span>
+      </div>
+    </div>
+
+    <div class="section-head" style="border-bottom:0;padding-bottom:0;margin-bottom:26px;">
+      <div><h2 style="font-size:26px;">Event log — MX-5 Cup #48</h2></div>
+    </div>
+
+    <div class="results-table-wrap">
+      <div class="rt-head">
+        <h3>Official races</h3>
+        <span class="mono" style="color:var(--muted);font-size:13px;">Updated as they happen</span>
+      </div>
+      <table class="results-table">
+        <thead>
+          <tr><th>Date</th><th>Track</th><th>Starting</th><th>Finish</th><th>Incidents</th></tr>
+        </thead>
+        <tbody>
+          <!-- EDIT ME: one <tr> per race. Delete this sample row first. -->
+          <tr>
+            <td colspan="5" style="color:var(--muted);font-style:italic;">
+              No races logged yet — add your first row here after your next official.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="results-table-wrap" style="margin-bottom:70px;">
+      <div class="rt-head">
+        <h3>GT3 — #01</h3>
+        <span class="mono" style="color:var(--muted);font-size:13px;">Updated as they happen</span>
+      </div>
+      <table class="results-table">
+        <thead>
+          <tr><th>Date</th><th>Event</th><th>Car</th><th>Finish</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5" style="color:var(--muted);font-style:italic;">
+              No races logged yet — add your first row here after your next race.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a href="index.html" class="brand">
+        <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark" style="height:20px;">
+        <span class="brand-word" style="font-size:16px;">JRAD<span>RACING</span></span>
+      </a>
+      <ul class="foot-links">
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="trophy.html">Trophy Room</a></li>
+        <li><a href="gear.html">Gear</a></li>
+        <li><a href="sponsors.html">Sponsors</a></li>
+        <li><a href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a></li>
+      </ul>
+      <span class="foot-copy">© <span id="year"></span> JRAD Racing</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site-fx.js" defer></script>
+<script src="assets/twitch-live.js" defer></script>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+</script>
+
+</body>
+</html>

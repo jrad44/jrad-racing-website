@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gear — JRAD Racing</title>
+<meta name="description" content="The sim racing rig and stream setup behind JRAD Racing.">
+<link rel="icon" type="image/png" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark">
+      <span class="brand-word">JRAD<span>RACING</span></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#garage">Garage</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="trophy.html">Trophy Room</a></li>
+      <li><a href="gear.html">Gear</a></li>
+      <li><a href="sponsors.html">Sponsors</a></li>
+      <li><a href="index.html#crew">Crew</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a>
+      <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener" data-watch-live>Watch Live</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-header">
+      <div class="kicker"><span class="flag-dot"></span> THE RIG</div>
+      <h1>Gear</h1>
+      <p>Everything used for racing and streaming — updated as the setup changes.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:44px;">
+
+    <div class="affiliate-banner">
+      <span class="dot">●</span>
+      <span>
+        Some links on this page may be affiliate links. If a category below
+        has no links yet, that's intentional — nothing gets tagged as an
+        affiliate link until it actually is one.
+        <!-- EDIT ME: once you have real affiliate codes, delete this
+             sentence and just keep the disclosure above it. -->
+      </span>
+    </div>
+
+    <!--
+      ============================================================
+      EDIT ME: each category is one .gear-cat block inside .gear-grid.
+      Add a real item as:
+        <li><a href="https://..." target="_blank" rel="noopener">Product name</a></li>
+      Until you have a link, plain text is fine:
+        <li>Product name</li>
+      Delete the .gear-empty line once a category has real items.
+      ============================================================
+    -->
+    <div class="gear-grid" style="margin-bottom:1px;">
+      <div class="gear-cat">
+        <h3>Racing gear</h3>
+        <ul>
+          <li class="gear-empty">Wheel base, pedals, seat — add your setup here</li>
+        </ul>
+      </div>
+      <div class="gear-cat">
+        <h3>Wheels &amp; rims</h3>
+        <ul>
+          <li class="gear-empty">Your MX-5 / GT3 rims — add here</li>
+        </ul>
+      </div>
+      <div class="gear-cat">
+        <h3>PC specs</h3>
+        <ul>
+          <li class="gear-empty">CPU, GPU, RAM — add here</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gear-grid" style="margin-bottom:56px;">
+      <div class="gear-cat">
+        <h3>Monitors</h3>
+        <ul>
+          <li class="gear-empty">Display setup — add here</li>
+        </ul>
+      </div>
+      <div class="gear-cat">
+        <h3>Stream gear</h3>
+        <ul>
+          <li class="gear-empty">Camera, mic, capture — add here</li>
+        </ul>
+      </div>
+      <div class="gear-cat">
+        <h3>Software</h3>
+        <ul>
+          <li class="gear-empty">OBS, overlays, apps — add here</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a href="index.html" class="brand">
+        <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark" style="height:20px;">
+        <span class="brand-word" style="font-size:16px;">JRAD<span>RACING</span></span>
+      </a>
+      <ul class="foot-links">
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="trophy.html">Trophy Room</a></li>
+        <li><a href="gear.html">Gear</a></li>
+        <li><a href="sponsors.html">Sponsors</a></li>
+        <li><a href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a></li>
+      </ul>
+      <span class="foot-copy">© <span id="year"></span> JRAD Racing</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site-fx.js" defer></script>
+<script src="assets/twitch-live.js" defer></script>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+</script>
+
+</body>
+</html>

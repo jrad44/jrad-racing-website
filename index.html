@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JRAD Racing — iRacing MX-5 Cup &amp; GT3</title>
+<meta name="description" content="JRAD Racing — MX-5 Cup and GT3 sim racing on iRacing. Live on Twitch, highlights on YouTube.">
+
+<!-- ============================================================
+     EDIT ME: the values below are the only things most people
+     will ever need to change. Everything else is layout/styling.
+     ============================================================ -->
+<link rel="icon" type="image/png" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="brand">
+      <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark">
+      <span class="brand-word">JRAD<span>RACING</span></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#garage">Garage</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="trophy.html">Trophy Room</a></li>
+      <li><a href="gear.html">Gear</a></li>
+      <li><a href="sponsors.html">Sponsors</a></li>
+      <li><a href="#crew">Crew</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-outline" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a>
+      <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener" data-watch-live>Watch Live</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" style="padding-top:64px;">
+    <div class="hero-top">
+      <div class="hero-flag-wrap" aria-hidden="true">
+        <video class="hero-flag-video" src="assets/hero-flag.mp4" autoplay muted loop playsinline preload="auto"></video>
+      </div>
+      <div class="hero-photo-wrap">
+        <svg class="blob-bg" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
+          <path class="blob-morph" d="M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z">
+            <animate attributeName="d" dur="14s" repeatCount="indefinite"
+              values="
+              M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z;
+              M50,110 C120,30 240,10 300,90 C350,150 340,260 290,330 C240,400 140,410 80,360 C20,310 -10,190 50,110 Z;
+              M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z
+              "/>
+          </path>
+        </svg>
+        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
+        <div class="hero-fade" aria-hidden="true"></div>
+        <div class="hero-scrub-hint mono" aria-hidden="true">drag / move mouse to scrub ↔</div>
+        <div class="hero-numberplate">48<span style="color:var(--muted);font-size:16px;">&nbsp;/&nbsp;</span>01</div>
+      </div>
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-eyebrow-row">
+              <span class="flag-dot"></span>
+              <span>MX-5 CUP #48 &nbsp;·&nbsp; GT3 #01 &nbsp;·&nbsp; ON IRACING</span>
+            </div>
+            <h1 class="hero-h">I race <em>after</em><br>the day job.</h1>
+            <p class="hero-sub">
+              JRAD Racing — MX-5 Cup and GT3 on iRacing. I'm on Twitch a couple
+              nights a week for full races, and the best of it lands on YouTube
+              for everyone who can't make the green flag live.
+            </p>
+            <div class="hero-ctas">
+              <a class="btn btn-primary" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener">Watch on Twitch</a>
+              <a class="btn btn-outline" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">Subscribe on YouTube</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ON TRACK THIS WEEK ================= -->
+  <section id="schedule">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>On track this week</h2>
+          <p>Racing goes up 2–3 nights a week, shifted around a real job.</p>
+        </div>
+      </div>
+
+      <p class="tz-note" style="margin-top:-14px;">
+        ALL TIMES PACIFIC — updated weekly
+      </p>
+
+      <!-- EDIT ME: keep this in sync with schedule.html — same days/times,
+           just the condensed homepage version. Give a day-card class="is-off"
+           to dim it if you're off that day. -->
+      <div class="day-grid">
+        <div class="day-card">
+          <h3>Tuesday</h3>
+          <div class="slot">
+            <div class="slot-label">MX-5 Cup — race</div>
+            <div class="slot-time">8:00 PM</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <h3>Wednesday</h3>
+          <div class="slot">
+            <div class="slot-label">Off track</div>
+            <div class="slot-time" style="font-family:'IBM Plex Sans';font-size:16px;color:var(--muted);">Editing for YouTube</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <h3>Thursday</h3>
+          <div class="slot">
+            <div class="slot-label">GT3 — practice / race</div>
+            <div class="slot-time">8:30 PM</div>
+          </div>
+        </div>
+        <div class="day-card is-off">
+          <h3>Friday</h3>
+          <div class="slot">
+            <div class="slot-label">Status</div>
+            <div class="slot-time">Off</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="extra-row" style="margin-bottom:1px;">
+        <div class="extra-card">
+          <div class="icon">🎥</div>
+          <h3>New video</h3>
+          <div class="slot-time" style="font-family:'Big Shoulders Display';color:var(--green);font-size:22px;">Most weekends</div>
+        </div>
+        <div class="extra-card">
+          <div class="icon">🏁</div>
+          <h3>Weekend racing</h3>
+          <div class="slot-time" style="font-family:'Big Shoulders Display';color:var(--green);font-size:22px;">Confirmed on Twitch/Discord</div>
+        </div>
+      </div>
+
+      <div class="board" style="margin-top:24px;">
+        <div class="board-top">
+          <span>WHY THIS MOVES</span>
+        </div>
+        <div style="padding:22px;color:var(--muted);font-size:15px;">
+          Work schedule comes first — this board gets updated at the start
+          of each week, and Discord gets a heads-up if something changes
+          last minute. The fastest way to know for sure: follow on Twitch
+          and turn on notifications.
+        </div>
+        <div class="board-foot">
+          <span>Live countdown to the next race lives on the full schedule.</span>
+          <a href="schedule.html">Full weekly schedule →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GARAGE ================= -->
+  <section id="garage">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>The garage</h2>
+          <p>Two series, two liveries. Both built around the same paint idea.</p>
+        </div>
+      </div>
+
+      <!-- MX-5 CUP BLOCK -->
+      <div class="class-block">
+        <div class="class-head">
+          <h3>MX-5 Cup</h3>
+          <span class="class-tag tag-mx5">Car #48</span>
+        </div>
+        <div class="class-body">
+          <img class="class-hero-img" src="assets/mx5-yellow.jpg" alt="Yellow and black JRAD Racing Mazda MX-5 Cup car, #48">
+          <div class="class-info">
+            <div class="car-number n-mx5">48</div>
+            <p>
+              The neon build is the one you'll see most — high-contrast,
+              easy to spot mid-pack, hard to miss in a photo finish.
+              Alternate liveries below run the same shape in different colorways.
+            </p>
+            <div class="thumb-row">
+              <img src="assets/mx5-blue.jpg" alt="Blue and white MX-5 Cup alternate livery">
+              <img src="assets/mx5-grey-rear.jpg" alt="Grey MX-5 Cup alternate livery, rear view">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GT3 BLOCK -->
+      <div class="class-block">
+        <div class="class-head">
+          <h3>GT3</h3>
+          <span class="class-tag tag-gt3">Car #01</span>
+        </div>
+        <div class="class-body">
+          <img class="class-hero-img" src="assets/gt3-porsche-green.jpg" alt="Green topographic livery Porsche 911 GT3, #01">
+          <div class="class-info">
+            <div class="car-number n-gt3">01</div>
+            <p>
+              GT3 nights run the green topo scheme across whatever the field
+              calls for — Porsche 911 GT3 R or BMW M4 GT3, same #01, same
+              paint language as the MX-5.
+            </p>
+            <div class="thumb-row">
+              <img src="assets/gt3-bmw-green.jpg" alt="Green topographic livery BMW M4 GT3, #01">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LATEST VIDEO ("live from the pit wall") ================= -->
+  <section id="latest-video">
+    <div class="wrap">
+      <div class="panel-label">
+        <h2>Live from the pit wall</h2>
+        <span class="mono" id="latestVideoMeta">Most recent upload — auto-pulled from YouTube</span>
+      </div>
+      <div class="player-frame">
+        <!--
+          EDIT ME: this used to be the live Twitch embed, but a live embed
+          shows a blank/offline screen most of the time and that's a bad
+          first impression. It now auto-loads your most recent YouTube
+          upload instead (via assets/youtube-feed.js), so there's always
+          something watchable here, live or not.
+
+          Requires YOUTUBE_CHANNEL_ID to be set in assets/youtube-feed.js —
+          see the comment at the top of that file for how to find it.
+        -->
+        <iframe
+          id="latestVideoFrame"
+          src=""
+          title="Most recent JRAD Racing video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECENT UPLOADS ================= -->
+  <section id="recent-uploads" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Recent uploads</h2>
+          <p>Pulled straight from YouTube — no manual updates needed.</p>
+        </div>
+      </div>
+      <div class="video-grid" id="recentVideosGrid">
+        <!-- EDIT ME: this grid is populated automatically by
+             assets/youtube-feed.js. These three cards are just a
+             loading/fallback state shown until that fetch resolves
+             (or if it fails, e.g. offline / feed unreachable). -->
+        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
+          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
+          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
+          <div class="video-thumb-wrap"><div class="video-thumb-empty">Loading latest uploads…</div></div>
+          <div class="video-card-body"><h4>See the channel on YouTube →</h4></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CREW / COMMUNITY ================= -->
+  <section id="crew">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Join the crew</h2>
+          <p>Every platform I actually post to — pick whichever you're already on.</p>
+        </div>
+      </div>
+
+      <div class="crew-grid">
+        <a class="crew-card" href="https://www.twitch.tv/jradracing" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 2 2 6v14h6v2h4l2-2h4l4-4V2H4zm16 12-3 3h-4l-2 2h-2v-2H5V4h15v10z"/><path d="M15 6h2v5h-2zm-5 0h2v5h-2z"/></svg>
+          <span class="platform">Twitch</span>
+          <span class="handle">twitch.tv/jradracing</span>
+        </a>
+        <a class="crew-card" href="https://www.youtube.com/@Jradracing" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3.2-.4-4.7a3 3 0 0 0-2.1-2.1C17.9 5 12 5 12 5s-5.9 0-7.5.2a3 3 0 0 0-2.1 2.1C2 8.8 2 12 2 12s0 3.2.4 4.7a3 3 0 0 0 2.1 2.1C6.1 19 12 19 12 19s5.9 0 7.5-.2a3 3 0 0 0 2.1-2.1c.4-1.5.4-4.7.4-4.7zM10 15V9l5.2 3-5.2 3z"/></svg>
+          <span class="platform">YouTube</span>
+          <span class="handle">@Jradracing</span>
+        </a>
+        <a class="crew-card" href="https://www.instagram.com/jradracing/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 3.1 0 4.1.1 1 .1 1.7.2 2.3.5.6.3 1.1.6 1.6 1.1.5.5.9 1 1.1 1.6.2.6.4 1.3.5 2.3.1 1 .1 1.4.1 4.1s0 3.1-.1 4.1c-.1 1-.2 1.7-.5 2.3a4.6 4.6 0 0 1-1.1 1.6 4.6 4.6 0 0 1-1.6 1.1c-.6.2-1.3.4-2.3.5-1 .1-1.4.1-4.1.1s-3.1 0-4.1-.1c-1-.1-1.7-.2-2.3-.5a4.6 4.6 0 0 1-1.6-1.1 4.6 4.6 0 0 1-1.1-1.6c-.2-.6-.4-1.3-.5-2.3C2 15.1 2 14.7 2 12s0-3.1.1-4.1c.1-1 .2-1.7.5-2.3.3-.6.6-1.1 1.1-1.6.5-.5 1-.9 1.6-1.1.6-.2 1.3-.4 2.3-.5C8.9 2 9.3 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zm5.2-8.4a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4z"/></svg>
+          <span class="platform">Instagram</span>
+          <span class="handle">@jradracing</span>
+        </a>
+        <a class="crew-card" href="https://www.tiktok.com/@jradracing" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 2h-3.2v13.6a2.8 2.8 0 1 1-2-2.7V9.6a6 6 0 1 0 5.2 5.9V8.9a7.6 7.6 0 0 0 4.4 1.4V7.1a4.3 4.3 0 0 1-4.4-5.1z"/></svg>
+          <span class="platform">TikTok</span>
+          <span class="handle">@jradracing</span>
+        </a>
+        <a class="crew-card" href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 5.5A17 17 0 0 0 15.6 4l-.3.6a12.9 12.9 0 0 1 3.8 1.5 14.7 14.7 0 0 0-13.8 0A12.9 12.9 0 0 1 9 4.6L8.6 4A17 17 0 0 0 4.2 5.5C1.7 9.3 1 13 1.3 16.6a17.2 17.2 0 0 0 5.2 2.6l.7-1.1a10.9 10.9 0 0 1-1.7-.8l.4-.3a12.3 12.3 0 0 0 10.4 0l.4.3a10.9 10.9 0 0 1-1.7.8l.7 1.1a17.1 17.1 0 0 0 5.2-2.6c.4-4.2-.7-7.9-2.9-11.1zM8.7 14.4c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7zm6.6 0c-.8 0-1.5-.8-1.5-1.7s.7-1.7 1.5-1.7 1.5.8 1.5 1.7-.7 1.7-1.5 1.7z"/></svg>
+          <span class="platform">Discord</span>
+          <span class="handle">Join the server</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Behind the wheel</h2>
+        </div>
+      </div>
+      <div class="about-grid">
+        <img class="about-photo" src="assets/driver-headshot.jpg" alt="Jared, JRAD Racing">
+        <div class="about-text">
+          <!-- EDIT ME: swap in your own bio, keep it a couple short paragraphs -->
+          <p><strong>I'm Jared</strong> — JRAD Racing is where the day job ends and the race weekend starts. iRacing's been the outlet for a while now: MX-5 Cup for the close, scrappy racing, GT3 for the longer, more technical stints.</p>
+          <p>The stream is the real thing — full sessions, mistakes included. YouTube is where the highlights, onboard clips, and setup breakdowns end up for anyone who'd rather watch the short version. Building this out one race week at a time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PARTNERS ================= -->
+  <section id="partners" style="padding-top:0;">
+    <div class="wrap">
+      <div class="partner-strip">
+        <img src="assets/iracing-logo.png" alt="iRacing">
+        <a class="partner-open" href="sponsors.html" style="text-decoration:none;">Partner &amp; affiliate slots opening as the channel grows — see Sponsors →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a href="#top" class="brand">
+        <img src="assets/jrad-icon-white.png" alt="JRAD Racing mark" style="height:20px;">
+        <span class="brand-word" style="font-size:16px;">JRAD<span>RACING</span></span>
+      </a>
+      <ul class="foot-links">
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="trophy.html">Trophy Room</a></li>
+        <li><a href="gear.html">Gear</a></li>
+        <li><a href="sponsors.html">Sponsors</a></li>
+        <li><a href="https://discord.gg/WEgZrhRds3" target="_blank" rel="noopener">Discord</a></li>
+      </ul>
+      <span class="foot-copy">© <span id="year"></span> JRAD Racing</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site-fx.js" defer></script>
+<script src="assets/twitch-live.js" defer></script>
+<script src="assets/youtube-feed.js" defer></script>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const toggle = document.getElementById('menuToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+</script>
+
+<script>
+  // ===== Hero video scrub: mousemove/touchmove drags playhead instead of playing =====
+  (function () {
+    const video = document.getElementById('heroScrubVideo');
+    const wrap = document.querySelector('.hero-photo-wrap');
+    if (!video) return;
+
+    const SENSITIVITY = 0.8;
+
+    let prevX = null;
+    let targetTime = 0;
+    let isSeeking = false;
+    let ready = false;
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function requestSeek(time) {
+      targetTime = clamp(time, 0, video.duration || 0);
+      if (isSeeking) return; // already mid-seek; onSeeked will pick up the latest targetTime
+      isSeeking = true;
+      video.currentTime = targetTime;
+    }
+
+    function applyDelta(currentX) {
+      if (!ready || !video.duration) {
+        prevX = currentX;
+        return;
+      }
+      if (prevX === null) {
+        prevX = currentX;
+        return;
+      }
+      const delta = currentX - prevX;
+      prevX = currentX;
+
+      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * video.duration;
+      requestSeek(targetTime + timeOffset);
+    }
+
+    video.addEventListener('loadedmetadata', () => {
+      ready = true;
+      video.pause();
+      // Park on the first frame until the user starts scrubbing.
+      requestSeek(0);
+    });
+
+    video.addEventListener('seeked', () => {
+      isSeeking = false;
+      // If the target moved again while we were seeking, chase it now —
+      // this is what stops rapid mousemoves/touchmoves from flooding the video element.
+      if (Math.abs(video.currentTime - targetTime) > 0.008) {
+        requestSeek(targetTime);
+      }
+    });
+
+    // --- Mouse (desktop) ---
+    window.addEventListener('mousemove', (e) => applyDelta(e.clientX));
+
+    // Reset the drag baseline when the pointer re-enters the window so the
+    // first move after a gap doesn't register a huge fake delta.
+    window.addEventListener('mouseenter', () => { prevX = null; });
+
+    // --- Touch (mobile/tablet) ---
+    // Scoped to the hero photo element itself so scrubbing there doesn't
+    // hijack scrolling anywhere else on the page.
+    const touchTarget = wrap || video;
+    touchTarget.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      prevX = e.touches[0].clientX;
+    }, { passive: true });
+
+    touchTarget.addEventListener('touchmove', (e) => {
+      if (e.touches.length !== 1) return;
+      // We're taking over horizontal drag on this element, so stop the
+      // page from scrolling while the user is scrubbing.
+      e.preventDefault();
+      applyDelta(e.touches[0].clientX);
+    }, { passive: false });
+
+    touchTarget.addEventListener('touchend', () => { prevX = null; });
+    touchTarget.addEventListener('touchcancel', () => { prevX = null; });
+  })();
+</script>
+
+</body>
+</html>
