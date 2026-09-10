@@ -119,7 +119,7 @@
   }
   .hero-top{
     position:relative;
-    min-height:clamp(520px, 84vh, 800px);
+    min-height:clamp(540px, 84vh, 840px);
     display:flex;
     align-items:center;
     overflow:hidden;
@@ -180,6 +180,7 @@
     z-index:0;
     touch-action:pan-y;
     pointer-events:none;
+    --hero-right:clamp(0px, calc(26vw - 240px), 960px);
   }
   /* Checkered flag loop fills the empty left side, purely decorative —
      no pointer events, so it never competes with touch or mouse events. */
@@ -205,22 +206,46 @@
   }
   .blob-bg{
     position:absolute;
-    top:8%;right:-6%;
-    width:62%;height:84%;
+    top:8%;
+    right:calc(var(--hero-right, 0px) - 50px);
+    width:clamp(360px, 42vw, 600px);
+    height:84%;
     z-index:0;
     opacity:0.7;
     pointer-events:none;
   }
   .blob-bg path{fill:var(--yellow);opacity:0.12;}
+
+  /* Extends the crisp white background of the photo all the way to the right
+     screen edge on desktop & ultra-wide screens. Mix-blend-mode:screen with
+     matching 0.92 opacity merges seamlessly with the video's white background
+     without any line or seam. */
+  .hero-white-extend{
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    width:calc(var(--hero-right, 0px) + 240px);
+    background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 100px, rgba(255,255,255,0.92) 100%);
+    mix-blend-mode:screen;
+    opacity:0.92;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* Video & canvas size preserves the 640x795 aspect ratio and fits full height
+     so the cutoff is always right below Jared's hand, never cropped to just his head. */
   .hero-photo{
     position:absolute;
     z-index:1;
     top:0;
-    right:0;
+    bottom:0;
+    right:var(--hero-right, 0px);
     height:100%;
-    width:64%;
-    object-fit:cover;
-    object-position:center top;
+    width:auto;
+    aspect-ratio:640 / 795;
+    object-fit:contain;
+    object-position:center bottom;
     pointer-events:none;
     touch-action:pan-y;
   }
@@ -355,7 +380,8 @@
     .class-body{grid-template-columns:1fr;}
     .class-hero-img{border-right:0;border-bottom:1px solid var(--line);min-height:220px;}
     .hero-top{min-height:clamp(460px, 78vh, 620px);}
-    .hero-photo{width:100%;opacity:0.68;}
+    .hero-white-extend{display:none;}
+    .hero-photo{width:100%;right:0;aspect-ratio:auto;object-fit:cover;object-position:center top;opacity:0.68;}
     video.hero-photo{opacity:0.72;}
     .hero-flag-wrap{width:100%;opacity:0.35;}
     .hero-flag-video{mask-image:linear-gradient(to bottom, black 40%, transparent 92%);-webkit-mask-image:linear-gradient(to bottom, black 40%, transparent 92%);}
