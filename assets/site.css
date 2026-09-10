@@ -119,39 +119,22 @@
   }
   .hero-top{
     position:relative;
-    min-height:clamp(540px, 84vh, 840px);
+    min-height:clamp(520px, 84vh, 800px);
     display:flex;
     align-items:center;
     overflow:hidden;
     touch-action:pan-y;
   }
-  /* Standard desktop hero copy spacing */
+  /* Pull the hero copy toward the true left edge of the viewport instead of
+     sitting inside the same centered 1180px column as the rest of the
+     site — on wide screens that centered wrap left a big empty gutter
+     before the text even started. */
   .hero-top > .wrap{
     max-width:none;
     margin:0;
-    padding-left:clamp(24px, 5vw, 64px);
+    padding-left:clamp(24px, 6vw, 88px);
     padding-right:24px;
     touch-action:pan-y;
-  }
-  /* Ultra-wide screens: position hero title, subtitles, and buttons comfortably in the left-third zone */
-  @media (min-width: 1600px) {
-    .hero-top > .wrap {
-      padding-left: clamp(80px, calc(15vw - 40px), 560px);
-      padding-right: 48px;
-    }
-    .hero-grid {
-      max-width: 600px;
-    }
-    .hero-photo-wrap {
-      --hero-right: clamp(80px, calc(15vw - 40px), 560px);
-    }
-    .hero-flag-wrap {
-      width: min(34vw, calc(clamp(80px, calc(15vw - 40px), 560px) + 420px));
-      max-width: none;
-    }
-    .hero-numberplate {
-      left: clamp(80px, calc(15vw - 40px), 560px);
-    }
   }
   .hero-grid{
     display:grid;
@@ -194,10 +177,9 @@
   .hero-photo-wrap{
     position:absolute;
     inset:0;
-    z-index:1;
+    z-index:0;
     touch-action:pan-y;
     pointer-events:none;
-    --hero-right:clamp(0px, calc(20vw - 120px), 640px);
   }
   /* Checkered flag loop fills the empty left side, purely decorative —
      no pointer events, so it never competes with touch or mouse events. */
@@ -205,8 +187,7 @@
     position:absolute;
     top:0;left:0;
     height:100%;
-    width:clamp(220px, 30vw, 440px);
-    max-width:440px;
+    width:54%;
     z-index:0;
     overflow:hidden;
     pointer-events:none;
@@ -218,39 +199,28 @@
     filter:grayscale(1) contrast(1.15) brightness(0.7);
     mix-blend-mode:screen;
     opacity:0.55;
-    -webkit-mask-image:linear-gradient(to right, black 0%, black 35%, transparent 75%);
-    mask-image:linear-gradient(to right, black 0%, black 35%, transparent 75%);
+    -webkit-mask-image:linear-gradient(to right, black 45%, transparent 92%);
+    mask-image:linear-gradient(to right, black 45%, transparent 92%);
     pointer-events:none;
   }
-
-  /* Extends the crisp white studio background all the way to the right
-     screen edge on desktop & ultra-wide screens, seamlessly continuing the photo. */
-  .hero-white-extend{
+  .blob-bg{
     position:absolute;
-    top:0;
-    bottom:0;
-    right:0;
-    width:calc(var(--hero-right, 0px) + clamp(260px, 30vw, 480px));
-    background:linear-gradient(to right, rgba(255,255,255,0) 0%, #ffffff 120px, #ffffff 100%);
-    pointer-events:none;
+    top:8%;right:-6%;
+    width:62%;height:84%;
     z-index:0;
+    opacity:0.7;
+    pointer-events:none;
   }
-
-  /* Video & canvas size preserves the 640x795 aspect ratio and fits full height
-     so the cutoff is always right below Jared's hand, never cropped to just his head. */
+  .blob-bg path{fill:var(--yellow);opacity:0.12;}
   .hero-photo{
     position:absolute;
     z-index:1;
     top:0;
-    bottom:0;
-    right:var(--hero-right, 0px);
-    height:100% !important;
-    width:auto !important;
-    max-width:none !important;
-    max-height:100% !important;
-    aspect-ratio:640 / 795 !important;
-    object-fit:contain !important;
-    object-position:center bottom !important;
+    right:0;
+    height:100%;
+    width:64%;
+    object-fit:cover;
+    object-position:center top;
     pointer-events:none;
     touch-action:pan-y;
   }
@@ -258,24 +228,23 @@
   canvas.hero-photo{
     background:transparent;
     filter:grayscale(1) contrast(1.08) brightness(1.02);
-    mix-blend-mode:normal;
-    opacity:1;
+    mix-blend-mode:screen;
+    opacity:0.92;
     pointer-events:none;
     touch-action:pan-y;
-    /* Jared is 100% solid and opaque between 10% and 85% (body is strictly 18%-76%). Left studio edge dissolves cleanly into dark asphalt; right edge hands off to white extension with zero hard lines */
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 10%, black 85%, transparent 98%);
-    mask-image:linear-gradient(to right, transparent 0%, black 10%, black 85%, transparent 98%);
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 42%);
+    mask-image:linear-gradient(to right, transparent 0%, black 42%);
   }
-  /* Solid-color fade top/bottom for the dark left side, masked so the white background
-     on the right remains pure, bright, and uninterrupted top-to-bottom. */
+  /* Solid-color fade top/bottom so the videos disappear into the page
+     background there too — left/right blending is handled per-video above
+     via each one's own mask, so they can meet in the middle without either
+     being flattened by a blanket overlay. */
   .hero-fade{
     position:absolute;inset:0;z-index:2;
     background:
       linear-gradient(to top, var(--asphalt-950) 0%, rgba(16,18,21,0) 30%),
       linear-gradient(to bottom, var(--asphalt-950) 0%, rgba(16,18,21,0) 18%);
     pointer-events:none;
-    -webkit-mask-image:linear-gradient(to right, black 0%, black 35%, transparent 65%);
-    mask-image:linear-gradient(to right, black 0%, black 35%, transparent 65%);
   }
   .hero-scrub-hint{
     position:absolute;bottom:24px;right:24px;z-index:3;
@@ -383,17 +352,11 @@
   .car-number.n-gt3{color:var(--green);}
 
   @media (max-width:760px){
-    .hero-white-extend{display:none;}
     .class-body{grid-template-columns:1fr;}
     .class-hero-img{border-right:0;border-bottom:1px solid var(--line);min-height:220px;}
     .hero-top{min-height:clamp(460px, 78vh, 620px);}
-    .hero-photo{width:100%;right:0;aspect-ratio:auto;object-fit:cover;object-position:center top;opacity:0.68;}
-    video.hero-photo,
-    canvas.hero-photo{
-      opacity:0.72;
-      -webkit-mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
-      mask-image:linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
-    }
+    .hero-photo{width:100%;opacity:0.68;}
+    video.hero-photo{opacity:0.72;}
     .hero-flag-wrap{width:100%;opacity:0.35;}
     .hero-flag-video{mask-image:linear-gradient(to bottom, black 40%, transparent 92%);-webkit-mask-image:linear-gradient(to bottom, black 40%, transparent 92%);}
     .hero-fade{
@@ -503,6 +466,7 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
+    .blob-morph{animation:none !important;}
   }
 
 /* ============================================================

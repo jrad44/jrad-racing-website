@@ -17,128 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="assets/site.css?v=20260910-ultrawide-8">
-<style id="hero-critical-styles">
-  .hero-top {
-    position: relative;
-    min-height: clamp(540px, 84vh, 840px) !important;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-  .hero-flag-wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: clamp(220px, 30vw, 440px) !important;
-    max-width: 440px !important;
-    z-index: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  .hero-flag-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(1) contrast(1.15) brightness(0.7);
-    mix-blend-mode: screen;
-    opacity: 0.55;
-    -webkit-mask-image: linear-gradient(to right, black 0%, black 35%, transparent 75%) !important;
-    mask-image: linear-gradient(to right, black 0%, black 35%, transparent 75%) !important;
-    pointer-events: none;
-  }
-  .hero-photo-wrap {
-    position: absolute;
-    inset: 0;
-    z-index: 1 !important;
-    touch-action: pan-y;
-    pointer-events: none;
-    --hero-right: clamp(0px, calc(15vw - 40px), 560px);
-  }
-  .hero-white-extend {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: calc(var(--hero-right, 0px) + clamp(260px, 30vw, 480px));
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, #ffffff 120px, #ffffff 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .hero-photo,
-  canvas.hero-photo {
-    position: absolute !important;
-    z-index: 1 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    right: var(--hero-right, 0px) !important;
-    height: 100% !important;
-    width: auto !important;
-    max-width: none !important;
-    max-height: 100% !important;
-    aspect-ratio: 640 / 795 !important;
-    object-fit: contain !important;
-    object-position: center bottom !important;
-    background: transparent !important;
-    filter: grayscale(1) contrast(1.08) brightness(1.02) !important;
-    mix-blend-mode: normal !important;
-    opacity: 1 !important;
-    pointer-events: none !important;
-    touch-action: pan-y !important;
-    /* Jared is 100% solid and opaque between 10% and 85% (body is strictly 18%-76%). Left studio edge dissolves cleanly into dark asphalt; right edge hands off to white extension with zero hard lines */
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 85%, transparent 98%) !important;
-    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 85%, transparent 98%) !important;
-  }
-  .hero-fade {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background:
-      linear-gradient(to top, var(--asphalt-950) 0%, rgba(16,18,21,0) 30%),
-      linear-gradient(to bottom, var(--asphalt-950) 0%, rgba(16,18,21,0) 18%);
-    pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, black 0%, black 35%, transparent 65%);
-    mask-image: linear-gradient(to right, black 0%, black 35%, transparent 65%);
-  }
-  /* Ultra-wide screens: position hero title, subtitles, and buttons comfortably in the left-third zone */
-  @media (min-width: 1600px) {
-    .hero-top > .wrap {
-      max-width: none !important;
-      margin: 0 !important;
-      padding-left: clamp(80px, calc(15vw - 40px), 560px) !important;
-      padding-right: 48px !important;
-    }
-    .hero-grid {
-      max-width: 600px !important;
-    }
-    .hero-photo-wrap {
-      --hero-right: clamp(80px, calc(15vw - 40px), 560px) !important;
-    }
-    .hero-flag-wrap {
-      width: min(34vw, calc(clamp(80px, calc(15vw - 40px), 560px) + 420px)) !important;
-      max-width: none !important;
-    }
-    .hero-numberplate {
-      left: clamp(80px, calc(15vw - 40px), 560px) !important;
-    }
-  }
-  @media (max-width: 760px) {
-    .hero-top { min-height: clamp(460px, 78vh, 620px) !important; }
-    .hero-white-extend { display: none !important; }
-    .hero-photo,
-    canvas.hero-photo {
-      width: 100% !important;
-      right: 0 !important;
-      aspect-ratio: auto !important;
-      object-fit: cover !important;
-      object-position: center top !important;
-      opacity: 0.68 !important;
-      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%) !important;
-      mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%) !important;
-    }
-  }
-</style>
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 
@@ -175,9 +54,18 @@
         <video class="hero-flag-video" src="assets/hero-flag.mp4" autoplay muted loop playsinline preload="auto"></video>
       </div>
       <div class="hero-photo-wrap">
-        <div class="hero-white-extend" aria-hidden="true"></div>
-        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></canvas>
-        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" poster="assets/hero-frames/frame_001.webp" muted playsinline preload="none" style="display:none;" aria-hidden="true"></video>
+        <svg class="blob-bg" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
+          <path class="blob-morph" d="M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z">
+            <animate attributeName="d" dur="14s" repeatCount="indefinite"
+              values="
+              M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z;
+              M50,110 C120,30 240,10 300,90 C350,150 340,260 290,330 C240,400 140,410 80,360 C20,310 -10,190 50,110 Z;
+              M60,90 C110,40 220,20 280,70 C340,120 360,220 320,300 C280,380 170,420 100,380 C30,340 10,180 60,90 Z
+              "/>
+          </path>
+        </svg>
+        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
+        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" style="display:none;" aria-hidden="true"></canvas>
         <div class="hero-fade" aria-hidden="true"></div>
         <div class="hero-numberplate">#04</div>
       </div>
@@ -516,24 +404,18 @@
 </script>
 
 <script>
-  // ===== Unified Butter-Smooth 60-144fps Hero Canvas Scrubbing Engine =====
+  // ===== Hero Animation: Desktop mouse scrubs video; Touchscreen scrolls scrub canvas at 60fps =====
   (function () {
+    const video = document.getElementById('heroScrubVideo');
     const canvas = document.getElementById('heroScrubCanvas');
     const heroSection = document.querySelector('.hero');
-    if (!canvas) return;
+    if (!video || !canvas) return;
 
     const ctx = canvas.getContext('2d');
     const TOTAL_FRAMES = 121;
     const frameImages = new Array(TOTAL_FRAMES + 1);
     let framesPreloaded = false;
     let lastRenderedFrame = 1;
-
-    let targetProgress = 0.05;
-    let currentProgress = 0.05;
-
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
-    }
 
     function getFrameSrc(index) {
       const pad = index < 10 ? '00' + index : (index < 100 ? '0' + index : '' + index);
@@ -566,7 +448,7 @@
       }
     }
 
-    // Immediately load and paint frame 1 for instant zero-delay display
+    // Immediately load and paint frame 1 for instant display on touch screens
     const frame1 = new Image();
     frame1.src = getFrameSrc(1);
     frame1.onload = () => {
@@ -578,18 +460,13 @@
       if (framesPreloaded) return;
       framesPreloaded = true;
 
-      // Phase 1: Load every 4th frame first for instant full-range availability
+      // Phase 1: Load every 4th frame first for quick availability across entire scroll range
       for (let i = 1; i <= TOTAL_FRAMES; i += 4) {
         if (!frameImages[i]) {
           const img = new Image();
           img.src = getFrameSrc(i);
           const idx = i;
-          img.onload = () => {
-            frameImages[idx] = img;
-            if (lastRenderedFrame === idx) {
-              renderCanvasFrame(idx);
-            }
-          };
+          img.onload = () => { frameImages[idx] = img; };
         }
       }
 
@@ -604,58 +481,114 @@
       }
     }
 
-    // Begin background preloading immediately
-    if (typeof requestIdleCallback === 'function') {
-      requestIdleCallback(startPreloadingFrames);
-    } else {
-      setTimeout(startPreloadingFrames, 100);
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
     }
 
-    // Check reduced motion preference
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      return;
+    // Touchscreen detection
+    const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches;
+    let isTouchDevice = isCoarse || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    function switchToTouchCanvas() {
+      isTouchDevice = true;
+      canvas.style.display = 'block';
+      video.style.display = 'none';
+      startPreloadingFrames();
+      updateTouchScroll();
     }
 
-    // --- Animation loop: runs on requestAnimationFrame with silky physics damping ---
-    function animationLoop() {
-      const diff = targetProgress - currentProgress;
-      if (Math.abs(diff) > 0.0005) {
-        currentProgress += diff * 0.22;
-        const targetFrame = clamp(Math.round(currentProgress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
-        if (targetFrame !== lastRenderedFrame) {
-          renderCanvasFrame(targetFrame);
-        }
-      }
-      requestAnimationFrame(animationLoop);
+    if (isTouchDevice) {
+      switchToTouchCanvas();
     }
-    requestAnimationFrame(animationLoop);
 
-    // --- Desktop: Mouse tracking across screen/hero ---
-    window.addEventListener('mousemove', (e) => {
-      const hero = heroSection || document.querySelector('.hero');
-      const heroRect = hero ? hero.getBoundingClientRect() : null;
-      if (!heroRect || (e.clientY >= 0 && e.clientY <= heroRect.bottom + 120)) {
-        const progress = clamp(e.clientX / window.innerWidth, 0, 1);
-        targetProgress = progress;
+    // Window touchstart ensures any touch device switches to the butter-smooth canvas instantly
+    window.addEventListener('touchstart', () => {
+      if (!isTouchDevice || canvas.style.display !== 'block') {
+        switchToTouchCanvas();
       }
     }, { passive: true });
 
-    // --- Mobile & Touch: Silky scroll scrubbing ---
-    function updateScrollProgress() {
+    // --- Touchscreen: Silky 60fps frame painting on scroll ---
+    let scrollRaf = null;
+    function updateTouchScroll() {
+      if (!isTouchDevice) return;
       const hero = heroSection || document.querySelector('.hero');
-      const heroHeight = hero ? hero.offsetHeight : 800;
-      const scrollRange = Math.max(heroHeight * 0.85, 360);
+      const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+      const scrollRange = Math.max(heroHeight - 60, 320);
       const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-      if (scrollY <= scrollRange + 120) {
-        const progress = clamp(scrollY / scrollRange, 0, 1);
-        targetProgress = progress;
+      const progress = clamp(scrollY / scrollRange, 0, 1);
+      const targetFrame = clamp(Math.round(progress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
+
+      if (targetFrame !== lastRenderedFrame) {
+        renderCanvasFrame(targetFrame);
       }
     }
 
-    window.addEventListener('scroll', updateScrollProgress, { passive: true });
-    window.addEventListener('touchmove', updateScrollProgress, { passive: true });
-    window.addEventListener('resize', updateScrollProgress, { passive: true });
+    function onTouchScroll() {
+      if (!isTouchDevice) return;
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = null;
+        updateTouchScroll();
+      });
+    }
+
+    window.addEventListener('scroll', onTouchScroll, { passive: true });
+    window.addEventListener('touchmove', onTouchScroll, { passive: true });
+    window.addEventListener('resize', onTouchScroll, { passive: true });
+
+    // --- Desktop: Mouse tracking using HTML5 Video ---
+    const SENSITIVITY = 0.8;
+    let prevX = null;
+    let targetTime = 0;
+    let isSeeking = false;
+    let videoReady = false;
+
+    function requestVideoSeek(time) {
+      targetTime = clamp(time, 0, video.duration || 0);
+      if (isSeeking) return;
+      isSeeking = true;
+      video.currentTime = targetTime;
+    }
+
+    function applyMouseDelta(currentX) {
+      if (!videoReady || !video.duration) {
+        prevX = currentX;
+        return;
+      }
+      if (prevX === null) {
+        prevX = currentX;
+        return;
+      }
+      const delta = currentX - prevX;
+      prevX = currentX;
+
+      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * video.duration;
+      requestVideoSeek(targetTime + timeOffset);
+    }
+
+    video.addEventListener('loadedmetadata', () => {
+      videoReady = true;
+      video.pause();
+      requestVideoSeek(0);
+    });
+
+    video.addEventListener('seeked', () => {
+      isSeeking = false;
+      if (Math.abs(video.currentTime - targetTime) > 0.008) {
+        requestVideoSeek(targetTime);
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isTouchDevice) return;
+      applyMouseDelta(e.clientX);
+    });
+
+    window.addEventListener('mouseenter', () => {
+      if (isTouchDevice) return;
+      prevX = null;
+    });
   })();
 </script>
 
