@@ -88,9 +88,14 @@ app.get('/api/youtube-recent', async (req, res) => {
   });
 });
 
-// Serve static assets and HTML files
+// Serve static assets and HTML files with cache control to prevent stale assets
 app.use(express.static(__dirname, {
-  extensions: ['html']
+  extensions: ['html'],
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html') || filePath.endsWith('.css') || filePath.endsWith('.js')) {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    }
+  }
 }));
 
 // Route fallback for client navigation

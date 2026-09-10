@@ -180,7 +180,7 @@
     z-index:0;
     touch-action:pan-y;
     pointer-events:none;
-    --hero-right:clamp(0px, calc(26vw - 240px), 960px);
+    --hero-right:clamp(0px, calc(20vw - 120px), 640px);
   }
   /* Checkered flag loop fills the empty left side, purely decorative —
      no pointer events, so it never competes with touch or mouse events. */
@@ -207,8 +207,8 @@
   .blob-bg{
     position:absolute;
     top:8%;
-    right:calc(var(--hero-right, 0px) - 50px);
-    width:clamp(360px, 42vw, 600px);
+    right:calc(var(--hero-right, 0px) + 20px);
+    width:clamp(360px, 36vw, 600px);
     height:84%;
     z-index:0;
     opacity:0.7;
@@ -225,8 +225,8 @@
     top:0;
     bottom:0;
     right:0;
-    width:calc(var(--hero-right, 0px) + 240px);
-    background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 100px, rgba(255,255,255,0.92) 100%);
+    width:calc(var(--hero-right, 0px) + 320px);
+    background:linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 160px, rgba(255,255,255,0.92) 100%);
     mix-blend-mode:screen;
     opacity:0.92;
     pointer-events:none;
@@ -241,11 +241,13 @@
     top:0;
     bottom:0;
     right:var(--hero-right, 0px);
-    height:100%;
-    width:auto;
-    aspect-ratio:640 / 795;
-    object-fit:contain;
-    object-position:center bottom;
+    height:100% !important;
+    width:auto !important;
+    max-width:none !important;
+    max-height:100% !important;
+    aspect-ratio:640 / 795 !important;
+    object-fit:contain !important;
+    object-position:center bottom !important;
     pointer-events:none;
     touch-action:pan-y;
   }
@@ -257,8 +259,8 @@
     opacity:0.92;
     pointer-events:none;
     touch-action:pan-y;
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 42%);
-    mask-image:linear-gradient(to right, transparent 0%, black 42%);
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 36%);
+    mask-image:linear-gradient(to right, transparent 0%, black 36%);
   }
   /* Solid-color fade top/bottom so the videos disappear into the page
      background there too — left/right blending is handled per-video above

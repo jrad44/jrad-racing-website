@@ -17,7 +17,82 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/site.css?v=20260910-ultrawide-3">
+<style id="hero-critical-styles">
+  .hero-top {
+    position: relative;
+    min-height: clamp(540px, 84vh, 840px) !important;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-photo-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    touch-action: pan-y;
+    pointer-events: none;
+    --hero-right: clamp(0px, calc(20vw - 120px), 640px);
+  }
+  .hero-white-extend {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: calc(var(--hero-right, 0px) + 320px) !important;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 160px, rgba(255,255,255,0.92) 100%) !important;
+    mix-blend-mode: screen !important;
+    opacity: 0.92 !important;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hero-photo,
+  canvas.hero-photo {
+    position: absolute !important;
+    z-index: 1 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: var(--hero-right, 0px) !important;
+    height: 100% !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: 100% !important;
+    aspect-ratio: 640 / 795 !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    background: transparent !important;
+    filter: grayscale(1) contrast(1.08) brightness(1.02) !important;
+    mix-blend-mode: screen !important;
+    opacity: 0.92 !important;
+    pointer-events: none !important;
+    touch-action: pan-y !important;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 36%) !important;
+    mask-image: linear-gradient(to right, transparent 0%, black 36%) !important;
+  }
+  .blob-bg {
+    position: absolute;
+    top: 8%;
+    right: calc(var(--hero-right, 0px) + 20px) !important;
+    width: clamp(360px, 36vw, 600px) !important;
+    height: 84%;
+    z-index: 0;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  @media (max-width: 760px) {
+    .hero-top { min-height: clamp(460px, 78vh, 620px) !important; }
+    .hero-white-extend { display: none !important; }
+    .hero-photo,
+    canvas.hero-photo {
+      width: 100% !important;
+      right: 0 !important;
+      aspect-ratio: auto !important;
+      object-fit: cover !important;
+      object-position: center top !important;
+      opacity: 0.68 !important;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -65,8 +140,8 @@
           </path>
         </svg>
         <div class="hero-white-extend" aria-hidden="true"></div>
-        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" poster="assets/hero-frames/frame_001.webp" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
-        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" style="display:none;" aria-hidden="true"></canvas>
+        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></canvas>
+        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" poster="assets/hero-frames/frame_001.webp" muted playsinline preload="none" style="display:none;" aria-hidden="true"></video>
         <div class="hero-fade" aria-hidden="true"></div>
         <div class="hero-numberplate">#04</div>
       </div>
@@ -405,18 +480,24 @@
 </script>
 
 <script>
-  // ===== Hero Animation: Desktop mouse scrubs video; Touchscreen scrolls scrub canvas at 60fps =====
+  // ===== Unified Butter-Smooth 60-144fps Hero Canvas Scrubbing Engine =====
   (function () {
-    const video = document.getElementById('heroScrubVideo');
     const canvas = document.getElementById('heroScrubCanvas');
     const heroSection = document.querySelector('.hero');
-    if (!video || !canvas) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     const TOTAL_FRAMES = 121;
     const frameImages = new Array(TOTAL_FRAMES + 1);
     let framesPreloaded = false;
     let lastRenderedFrame = 1;
+
+    let targetProgress = 0.05;
+    let currentProgress = 0.05;
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
 
     function getFrameSrc(index) {
       const pad = index < 10 ? '00' + index : (index < 100 ? '0' + index : '' + index);
@@ -449,7 +530,7 @@
       }
     }
 
-    // Immediately load and paint frame 1 for instant display on touch screens
+    // Immediately load and paint frame 1 for instant zero-delay display
     const frame1 = new Image();
     frame1.src = getFrameSrc(1);
     frame1.onload = () => {
@@ -461,13 +542,18 @@
       if (framesPreloaded) return;
       framesPreloaded = true;
 
-      // Phase 1: Load every 4th frame first for quick availability across entire scroll range
+      // Phase 1: Load every 4th frame first for instant full-range availability
       for (let i = 1; i <= TOTAL_FRAMES; i += 4) {
         if (!frameImages[i]) {
           const img = new Image();
           img.src = getFrameSrc(i);
           const idx = i;
-          img.onload = () => { frameImages[idx] = img; };
+          img.onload = () => {
+            frameImages[idx] = img;
+            if (lastRenderedFrame === idx) {
+              renderCanvasFrame(idx);
+            }
+          };
         }
       }
 
@@ -482,114 +568,58 @@
       }
     }
 
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
+    // Begin background preloading immediately
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(startPreloadingFrames);
+    } else {
+      setTimeout(startPreloadingFrames, 100);
     }
 
-    // Touchscreen detection
-    const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches;
-    let isTouchDevice = isCoarse || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-
-    function switchToTouchCanvas() {
-      isTouchDevice = true;
-      canvas.style.display = 'block';
-      video.style.display = 'none';
-      startPreloadingFrames();
-      updateTouchScroll();
+    // Check reduced motion preference
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      return;
     }
 
-    if (isTouchDevice) {
-      switchToTouchCanvas();
+    // --- Animation loop: runs on requestAnimationFrame with silky physics damping ---
+    function animationLoop() {
+      const diff = targetProgress - currentProgress;
+      if (Math.abs(diff) > 0.0005) {
+        currentProgress += diff * 0.22;
+        const targetFrame = clamp(Math.round(currentProgress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
+        if (targetFrame !== lastRenderedFrame) {
+          renderCanvasFrame(targetFrame);
+        }
+      }
+      requestAnimationFrame(animationLoop);
     }
+    requestAnimationFrame(animationLoop);
 
-    // Window touchstart ensures any touch device switches to the butter-smooth canvas instantly
-    window.addEventListener('touchstart', () => {
-      if (!isTouchDevice || canvas.style.display !== 'block') {
-        switchToTouchCanvas();
+    // --- Desktop: Mouse tracking across screen/hero ---
+    window.addEventListener('mousemove', (e) => {
+      const hero = heroSection || document.querySelector('.hero');
+      const heroRect = hero ? hero.getBoundingClientRect() : null;
+      if (!heroRect || (e.clientY >= 0 && e.clientY <= heroRect.bottom + 120)) {
+        const progress = clamp(e.clientX / window.innerWidth, 0, 1);
+        targetProgress = progress;
       }
     }, { passive: true });
 
-    // --- Touchscreen: Silky 60fps frame painting on scroll ---
-    let scrollRaf = null;
-    function updateTouchScroll() {
-      if (!isTouchDevice) return;
+    // --- Mobile & Touch: Silky scroll scrubbing ---
+    function updateScrollProgress() {
       const hero = heroSection || document.querySelector('.hero');
-      const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-      const scrollRange = Math.max(heroHeight - 60, 320);
+      const heroHeight = hero ? hero.offsetHeight : 800;
+      const scrollRange = Math.max(heroHeight * 0.85, 360);
       const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-      const progress = clamp(scrollY / scrollRange, 0, 1);
-      const targetFrame = clamp(Math.round(progress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
-
-      if (targetFrame !== lastRenderedFrame) {
-        renderCanvasFrame(targetFrame);
+      if (scrollY <= scrollRange + 120) {
+        const progress = clamp(scrollY / scrollRange, 0, 1);
+        targetProgress = progress;
       }
     }
 
-    function onTouchScroll() {
-      if (!isTouchDevice) return;
-      if (scrollRaf) return;
-      scrollRaf = requestAnimationFrame(() => {
-        scrollRaf = null;
-        updateTouchScroll();
-      });
-    }
-
-    window.addEventListener('scroll', onTouchScroll, { passive: true });
-    window.addEventListener('touchmove', onTouchScroll, { passive: true });
-    window.addEventListener('resize', onTouchScroll, { passive: true });
-
-    // --- Desktop: Mouse tracking using HTML5 Video ---
-    const SENSITIVITY = 0.8;
-    let prevX = null;
-    let targetTime = 0;
-    let isSeeking = false;
-    let videoReady = false;
-
-    function requestVideoSeek(time) {
-      targetTime = clamp(time, 0, video.duration || 0);
-      if (isSeeking) return;
-      isSeeking = true;
-      video.currentTime = targetTime;
-    }
-
-    function applyMouseDelta(currentX) {
-      if (!videoReady || !video.duration) {
-        prevX = currentX;
-        return;
-      }
-      if (prevX === null) {
-        prevX = currentX;
-        return;
-      }
-      const delta = currentX - prevX;
-      prevX = currentX;
-
-      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * video.duration;
-      requestVideoSeek(targetTime + timeOffset);
-    }
-
-    video.addEventListener('loadedmetadata', () => {
-      videoReady = true;
-      video.pause();
-      requestVideoSeek(0);
-    });
-
-    video.addEventListener('seeked', () => {
-      isSeeking = false;
-      if (Math.abs(video.currentTime - targetTime) > 0.008) {
-        requestVideoSeek(targetTime);
-      }
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (isTouchDevice) return;
-      applyMouseDelta(e.clientX);
-    });
-
-    window.addEventListener('mouseenter', () => {
-      if (isTouchDevice) return;
-      prevX = null;
-    });
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    window.addEventListener('touchmove', updateScrollProgress, { passive: true });
+    window.addEventListener('resize', updateScrollProgress, { passive: true });
   })();
 </script>
 
