@@ -427,15 +427,15 @@
       let img = frameImages[targetIndex];
       // If requested frame hasn't finished loading yet, find the closest available frame
       if (!img || !img.complete || img.naturalWidth === 0) {
-        for (let diff = 1; diff <= TOTAL_FRAMES; diff++) {
-          const prev = targetIndex - diff;
-          if (prev >= 1 && frameImages[prev] && frameImages[prev].complete && frameImages[prev].naturalWidth > 0) {
-            img = frameImages[prev];
+        for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+          const prev = frameImages[targetIndex - offset];
+          if (prev && prev.complete && prev.naturalWidth > 0) {
+            img = prev;
             break;
           }
-          const next = targetIndex + diff;
-          if (next <= TOTAL_FRAMES && frameImages[next] && frameImages[next].complete && frameImages[next].naturalWidth > 0) {
-            img = frameImages[next];
+          const next = frameImages[targetIndex + offset];
+          if (next && next.complete && next.naturalWidth > 0) {
+            img = next;
             break;
           }
         }
@@ -465,8 +465,7 @@
         if (!frameImages[i]) {
           const img = new Image();
           img.src = getFrameSrc(i);
-          const idx = i;
-          img.onload = () => { frameImages[idx] = img; };
+          frameImages[i] = img;
         }
       }
 
@@ -475,8 +474,7 @@
         if (!frameImages[i]) {
           const img = new Image();
           img.src = getFrameSrc(i);
-          const idx = i;
-          img.onload = () => { frameImages[idx] = img; };
+          frameImages[i] = img;
         }
       }
     }

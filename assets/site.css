@@ -224,7 +224,6 @@
     pointer-events:none;
     touch-action:pan-y;
   }
-  video.hero-photo,
   canvas.hero-photo{
     background:transparent;
     filter:grayscale(1) contrast(1.08) brightness(1.02);
@@ -267,6 +266,28 @@
     font-family:'Big Shoulders Display';font-weight:800;font-size:26px;
     color:var(--yellow);
     pointer-events:none;
+  }
+
+  /* Ultrawide Displays:
+     - 3/4 of Jared's body visible (cutoff right below hand, avoiding excessive close-up zoom)
+     - Hero title, subtitles, eyebrow, and buttons aligned 1/3 of the way from the left edge
+     - Yellow backdrop blob scaled and centered directly behind the photo
+  */
+  @media (min-width: 2000px), (min-aspect-ratio: 19/10) {
+    .hero-top > .wrap {
+      padding-left: 33.333vw;
+    }
+    .hero-photo {
+      width: clamp(760px, 33.333vw, 920px);
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      right: 0;
+    }
+    .blob-bg {
+      width: clamp(680px, 33.333vw, 880px);
+      right: -2%;
+    }
   }
 
   .player-panel{
