@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="assets/site.css?v=20260910-ultrawide-3">
+<link rel="stylesheet" href="assets/site.css?v=20260910-ultrawide-4">
 <style id="hero-critical-styles">
   .hero-top {
     position: relative;
@@ -32,19 +32,10 @@
     z-index: 0;
     touch-action: pan-y;
     pointer-events: none;
-    --hero-right: clamp(0px, calc(20vw - 120px), 640px);
+    --hero-right: clamp(0px, calc(15vw - 40px), 560px);
   }
   .hero-white-extend {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: calc(var(--hero-right, 0px) + 320px) !important;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 160px, rgba(255,255,255,0.92) 100%) !important;
-    mix-blend-mode: screen !important;
-    opacity: 0.92 !important;
-    pointer-events: none;
-    z-index: 1;
+    display: none !important;
   }
   .hero-photo,
   canvas.hero-photo {
@@ -66,8 +57,9 @@
     opacity: 0.92 !important;
     pointer-events: none !important;
     touch-action: pan-y !important;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 36%) !important;
-    mask-image: linear-gradient(to right, transparent 0%, black 36%) !important;
+    /* Soft bilateral blend: completely dissolves the white studio light into the dark canvas on both left and right with ZERO hard lines */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 68%, transparent 92%) !important;
+    mask-image: linear-gradient(to right, transparent 0%, black 20%, black 68%, transparent 92%) !important;
   }
   .blob-bg {
     position: absolute;
@@ -79,9 +71,29 @@
     opacity: 0.7;
     pointer-events: none;
   }
+  /* Ultra-wide screens: position hero title, subtitles, and buttons comfortably in the left-third zone */
+  @media (min-width: 1600px) {
+    .hero-top > .wrap {
+      max-width: none !important;
+      margin: 0 !important;
+      padding-left: clamp(80px, calc(15vw - 40px), 560px) !important;
+      padding-right: 48px !important;
+    }
+    .hero-grid {
+      max-width: 600px !important;
+    }
+    .hero-photo-wrap {
+      --hero-right: clamp(80px, calc(15vw - 40px), 560px) !important;
+    }
+    .hero-flag-wrap {
+      width: clamp(54%, 62vw, 75%) !important;
+    }
+    .hero-numberplate {
+      left: clamp(80px, calc(15vw - 40px), 560px) !important;
+    }
+  }
   @media (max-width: 760px) {
     .hero-top { min-height: clamp(460px, 78vh, 620px) !important; }
-    .hero-white-extend { display: none !important; }
     .hero-photo,
     canvas.hero-photo {
       width: 100% !important;
@@ -90,6 +102,8 @@
       object-fit: cover !important;
       object-position: center top !important;
       opacity: 0.68 !important;
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%) !important;
+      mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%) !important;
     }
   }
 </style>
@@ -139,7 +153,6 @@
               "/>
           </path>
         </svg>
-        <div class="hero-white-extend" aria-hidden="true"></div>
         <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></canvas>
         <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" poster="assets/hero-frames/frame_001.webp" muted playsinline preload="none" style="display:none;" aria-hidden="true"></video>
         <div class="hero-fade" aria-hidden="true"></div>
