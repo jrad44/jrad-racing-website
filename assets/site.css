@@ -356,7 +356,8 @@
     .class-hero-img{border-right:0;border-bottom:1px solid var(--line);min-height:220px;}
     .hero-top{min-height:clamp(460px, 78vh, 620px);}
     .hero-photo{width:100%;opacity:0.68;}
-    video.hero-photo{opacity:0.72;}
+    video.hero-photo,
+    canvas.hero-photo{opacity:0.72;}
     .hero-flag-wrap{width:100%;opacity:0.35;}
     .hero-flag-video{mask-image:linear-gradient(to bottom, black 40%, transparent 92%);-webkit-mask-image:linear-gradient(to bottom, black 40%, transparent 92%);}
     .hero-fade{

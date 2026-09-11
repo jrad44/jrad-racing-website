@@ -64,8 +64,7 @@
               "/>
           </path>
         </svg>
-        <video id="heroScrubVideo" class="hero-photo" src="assets/hero-scrub.mp4" muted playsinline preload="auto" aria-label="Jared, driver behind JRAD Racing — move your mouse to scrub"></video>
-        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" style="display:none;" aria-hidden="true"></canvas>
+        <canvas id="heroScrubCanvas" class="hero-photo" width="640" height="795" aria-label="Jared, driver behind JRAD Racing — move mouse to rotate gaze and posture"></canvas>
         <div class="hero-fade" aria-hidden="true"></div>
         <div class="hero-numberplate">#04</div>
       </div>
@@ -404,191 +403,259 @@
 </script>
 
 <script>
-  // ===== Hero Animation: Desktop mouse scrubs video; Touchscreen scrolls scrub canvas at 60fps =====
+  // ===== High-Performance 2D Canvas Engine: 60-144fps Scrubbing for Desktop & Mobile =====
   (function () {
-    const video = document.getElementById('heroScrubVideo');
     const canvas = document.getElementById('heroScrubCanvas');
     const heroSection = document.querySelector('.hero');
-    if (!video || !canvas) return;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    // High performance 2D context with desynchronized hint for lowest possible paint latency
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true }) || canvas.getContext('2d');
+    if (!ctx) return;
+    if ('imageSmoothingQuality' in ctx) {
+      ctx.imageSmoothingQuality = 'high';
+    }
+
     const TOTAL_FRAMES = 121;
-    const frameImages = new Array(TOTAL_FRAMES + 1);
-    let framesPreloaded = false;
-    let lastRenderedFrame = 1;
+    const CANVAS_WIDTH = 640;
+    const CANVAS_HEIGHT = 795;
+    const frameBitmaps = new Array(TOTAL_FRAMES + 1);
+    let lastRenderedIndex = -1;
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
 
     function getFrameSrc(index) {
       const pad = index < 10 ? '00' + index : (index < 100 ? '0' + index : '' + index);
       return 'assets/hero-frames/frame_' + pad + '.webp';
     }
 
+    // High-performance canvas paint
     function renderCanvasFrame(targetIndex) {
-      if (!ctx) return;
-      let img = frameImages[targetIndex];
-      // If requested frame hasn't finished loading yet, find the closest available frame
-      if (!img || !img.complete || img.naturalWidth === 0) {
+      const frameIndex = clamp(Math.round(targetIndex), 1, TOTAL_FRAMES);
+      if (frameIndex === lastRenderedIndex) return;
+
+      let frame = frameBitmaps[frameIndex];
+      // If requested frame is still decoding/uploading to GPU, seamlessly fallback to closest available frame
+      if (!frame) {
         for (let diff = 1; diff <= TOTAL_FRAMES; diff++) {
-          const prev = targetIndex - diff;
-          if (prev >= 1 && frameImages[prev] && frameImages[prev].complete && frameImages[prev].naturalWidth > 0) {
-            img = frameImages[prev];
+          const prev = frameIndex - diff;
+          if (prev >= 1 && frameBitmaps[prev]) {
+            frame = frameBitmaps[prev];
             break;
           }
-          const next = targetIndex + diff;
-          if (next <= TOTAL_FRAMES && frameImages[next] && frameImages[next].complete && frameImages[next].naturalWidth > 0) {
-            img = frameImages[next];
+          const next = frameIndex + diff;
+          if (next <= TOTAL_FRAMES && frameBitmaps[next]) {
+            frame = frameBitmaps[next];
             break;
           }
         }
       }
 
-      if (img && img.complete && img.naturalWidth > 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        lastRenderedFrame = targetIndex;
+      if (frame) {
+        ctx.drawImage(frame, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        lastRenderedIndex = frameIndex;
       }
     }
 
-    // Immediately load and paint frame 1 for instant display on touch screens
-    const frame1 = new Image();
-    frame1.src = getFrameSrc(1);
-    frame1.onload = () => {
-      frameImages[1] = frame1;
+    // Preload an individual frame asynchronously into GPU texture memory (ImageBitmap)
+    async function loadFrame(index) {
+      if (frameBitmaps[index]) return frameBitmaps[index];
+      const src = getFrameSrc(index);
+
+      try {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+
+        if (img.decode) {
+          try {
+            await img.decode();
+          } catch (e) {
+            // decode error, continue with image or fallback
+          }
+        } else {
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+        }
+
+        // Convert to hardware-accelerated GPU ImageBitmap if supported
+        if (typeof window.createImageBitmap === 'function') {
+          try {
+            const bmp = await window.createImageBitmap(img);
+            frameBitmaps[index] = bmp;
+            if (Math.round(currentFrame) === index && lastRenderedIndex !== index) {
+              renderCanvasFrame(index);
+            }
+            return bmp;
+          } catch (err) {
+            // fallback to img
+          }
+        }
+
+        frameBitmaps[index] = img;
+        if (Math.round(currentFrame) === index && lastRenderedIndex !== index) {
+          renderCanvasFrame(index);
+        }
+        return img;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Immediately load and paint Frame 1 for zero-delay instant display
+    loadFrame(1).then(() => {
       renderCanvasFrame(1);
-    };
+    });
 
-    function startPreloadingFrames() {
-      if (framesPreloaded) return;
-      framesPreloaded = true;
+    // Background preloader for all 121 individual WebP frames into GPU memory
+    async function preloadAllFramesInBackground() {
+      // Phase 1: Key anchor frames distributed across the full scrub range
+      const anchors = [1, 15, 30, 45, 60, 75, 90, 105, 121];
+      await Promise.all(anchors.map(loadFrame));
 
-      // Phase 1: Load every 4th frame first for quick availability across entire scroll range
-      for (let i = 1; i <= TOTAL_FRAMES; i += 4) {
-        if (!frameImages[i]) {
-          const img = new Image();
-          img.src = getFrameSrc(i);
-          const idx = i;
-          img.onload = () => { frameImages[idx] = img; };
-        }
+      // Phase 2: Intermediate frames for smooth scrubbing
+      const intermediates = [];
+      for (let i = 1; i <= TOTAL_FRAMES; i += 3) {
+        if (!frameBitmaps[i]) intermediates.push(i);
       }
+      await Promise.all(intermediates.map(loadFrame));
 
-      // Phase 2: Load all remaining frames
+      // Phase 3: All remaining frames in concurrent batches of 8 to prevent thread blocking
+      const remaining = [];
       for (let i = 1; i <= TOTAL_FRAMES; i++) {
-        if (!frameImages[i]) {
-          const img = new Image();
-          img.src = getFrameSrc(i);
-          const idx = i;
-          img.onload = () => { frameImages[idx] = img; };
-        }
+        if (!frameBitmaps[i]) remaining.push(i);
+      }
+
+      const BATCH_SIZE = 8;
+      for (let i = 0; i < remaining.length; i += BATCH_SIZE) {
+        const batch = remaining.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(loadFrame));
       }
     }
 
-    function clamp(val, min, max) {
-      return Math.min(Math.max(val, min), max);
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(() => { preloadAllFramesInBackground(); }, { timeout: 1000 });
+    } else {
+      setTimeout(preloadAllFramesInBackground, 50);
     }
 
-    // Touchscreen detection
+    // --- State & Damped Physics Engine ---
+    let currentFrame = 1;
+    let targetFrame = 1;
+    let physicsRafId = null;
+    let lastTime = 0;
+    let isTouchActive = false;
+
+    // Check device characteristics
     const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches;
-    let isTouchDevice = isCoarse || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    let isTouchDevice = isCoarse || ('ontouchstart' in window);
 
-    function switchToTouchCanvas() {
-      isTouchDevice = true;
-      canvas.style.display = 'block';
-      video.style.display = 'none';
-      startPreloadingFrames();
-      updateTouchScroll();
+    // Frame-rate independent damped physics loop running at monitor's native refresh rate (60Hz, 120Hz, 144Hz+)
+    function physicsLoop(timestamp) {
+      if (!lastTime) lastTime = timestamp;
+      // Calculate delta time in seconds, clamped to 100ms max to prevent jumps if tab loses focus
+      const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
+      lastTime = timestamp;
+
+      // Critical exponential damping lambda
+      // lambda = 22 provides instantaneous response with smooth deceleration
+      const lambda = 22;
+      const factor = 1 - Math.exp(-lambda * dt);
+
+      const diff = targetFrame - currentFrame;
+      currentFrame += diff * factor;
+
+      renderCanvasFrame(currentFrame);
+
+      // Settle check: when within 0.02 frames of target, snap and pause the loop to save CPU/GPU
+      if (Math.abs(targetFrame - currentFrame) < 0.02) {
+        currentFrame = targetFrame;
+        renderCanvasFrame(currentFrame);
+        physicsRafId = null;
+        lastTime = 0;
+        return;
+      }
+
+      physicsRafId = requestAnimationFrame(physicsLoop);
     }
 
-    if (isTouchDevice) {
-      switchToTouchCanvas();
+    function startPhysicsLoop() {
+      if (!physicsRafId) {
+        lastTime = performance.now();
+        physicsRafId = requestAnimationFrame(physicsLoop);
+      }
     }
 
-    // Window touchstart ensures any touch device switches to the butter-smooth canvas instantly
-    window.addEventListener('touchstart', () => {
-      if (!isTouchDevice || canvas.style.display !== 'block') {
-        switchToTouchCanvas();
+    // --- Desktop: Mouse tracking driving the damped physics loop ---
+    function onMouseMove(e) {
+      if (isTouchActive) return;
+
+      // Only scrub when hero is near or in the viewport
+      const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight;
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (scrollY > heroHeight + 80) return;
+
+      // Horizontal cursor position with comfortable edge padding
+      const padding = Math.min(window.innerWidth * 0.04, 50);
+      const effectiveWidth = Math.max(window.innerWidth - 2 * padding, 1);
+      const progress = clamp((e.clientX - padding) / effectiveWidth, 0, 1);
+
+      targetFrame = 1 + progress * (TOTAL_FRAMES - 1);
+      startPhysicsLoop();
+    }
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse') {
+        isTouchActive = false;
+        onMouseMove(e);
       }
     }, { passive: true });
 
-    // --- Touchscreen: Silky 60fps frame painting on scroll ---
-    let scrollRaf = null;
-    function updateTouchScroll() {
-      if (!isTouchDevice) return;
+    // --- Mobile & Touchscreen: Silky 60fps frame painting tied to vertical scroll progress ---
+    function getScrollTargetFrame() {
       const hero = heroSection || document.querySelector('.hero');
       const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
       const scrollRange = Math.max(heroHeight - 60, 320);
       const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
       const progress = clamp(scrollY / scrollRange, 0, 1);
-      const targetFrame = clamp(Math.round(progress * (TOTAL_FRAMES - 1)) + 1, 1, TOTAL_FRAMES);
+      return 1 + progress * (TOTAL_FRAMES - 1);
+    }
 
-      if (targetFrame !== lastRenderedFrame) {
-        renderCanvasFrame(targetFrame);
+    let scrollRafId = null;
+    function onScrollOrTouch() {
+      const isMobileWidth = window.innerWidth <= 860;
+      if (isTouchDevice || isTouchActive || isMobileWidth) {
+        if (scrollRafId) return;
+        scrollRafId = requestAnimationFrame(() => {
+          scrollRafId = null;
+          const target = getScrollTargetFrame();
+          currentFrame = target;
+          targetFrame = target;
+          renderCanvasFrame(target);
+        });
       }
     }
 
-    function onTouchScroll() {
-      if (!isTouchDevice) return;
-      if (scrollRaf) return;
-      scrollRaf = requestAnimationFrame(() => {
-        scrollRaf = null;
-        updateTouchScroll();
-      });
+    window.addEventListener('touchstart', () => {
+      isTouchActive = true;
+      isTouchDevice = true;
+    }, { passive: true });
+
+    window.addEventListener('scroll', onScrollOrTouch, { passive: true });
+    window.addEventListener('touchmove', onScrollOrTouch, { passive: true });
+    window.addEventListener('resize', () => {
+      onScrollOrTouch();
+    }, { passive: true });
+
+    // Initial check for mobile/touch scroll position on load
+    if (isTouchDevice || window.innerWidth <= 860) {
+      onScrollOrTouch();
     }
-
-    window.addEventListener('scroll', onTouchScroll, { passive: true });
-    window.addEventListener('touchmove', onTouchScroll, { passive: true });
-    window.addEventListener('resize', onTouchScroll, { passive: true });
-
-    // --- Desktop: Mouse tracking using HTML5 Video ---
-    const SENSITIVITY = 0.8;
-    let prevX = null;
-    let targetTime = 0;
-    let isSeeking = false;
-    let videoReady = false;
-
-    function requestVideoSeek(time) {
-      targetTime = clamp(time, 0, video.duration || 0);
-      if (isSeeking) return;
-      isSeeking = true;
-      video.currentTime = targetTime;
-    }
-
-    function applyMouseDelta(currentX) {
-      if (!videoReady || !video.duration) {
-        prevX = currentX;
-        return;
-      }
-      if (prevX === null) {
-        prevX = currentX;
-        return;
-      }
-      const delta = currentX - prevX;
-      prevX = currentX;
-
-      const timeOffset = (delta / window.innerWidth) * SENSITIVITY * video.duration;
-      requestVideoSeek(targetTime + timeOffset);
-    }
-
-    video.addEventListener('loadedmetadata', () => {
-      videoReady = true;
-      video.pause();
-      requestVideoSeek(0);
-    });
-
-    video.addEventListener('seeked', () => {
-      isSeeking = false;
-      if (Math.abs(video.currentTime - targetTime) > 0.008) {
-        requestVideoSeek(targetTime);
-      }
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (isTouchDevice) return;
-      applyMouseDelta(e.clientX);
-    });
-
-    window.addEventListener('mouseenter', () => {
-      if (isTouchDevice) return;
-      prevX = null;
-    });
   })();
 </script>
 
