@@ -191,6 +191,41 @@
         </div>
       </div>
 
+      <!-- GARAGE VIDEO -->
+      <div id="garageVideoContainer" class="garage-video-container">
+        <!-- Paddock Header Overlay Bar -->
+        <div class="garage-hud-bar">
+          <div class="hud-tag">
+            <span class="hud-live-dot" aria-hidden="true"></span>
+            <span class="mono">PADDOCK BAY 01 &bull; PIT ENTRY</span>
+          </div>
+          <div class="hud-fleet mono">
+            <span class="hud-badge badge-mx5">#48 MX-5</span>
+            <span class="hud-badge badge-gt3">#01 GT3</span>
+          </div>
+        </div>
+
+        <video id="garageScrubVideo" class="garage-scrub-video" src="./assets/garage-scrub.mp4" muted playsinline preload="metadata"></video>
+
+        <!-- Environmental Vignette & Atmosphere Blending Layer -->
+        <div class="garage-atmosphere-overlay" aria-hidden="true"></div>
+
+        <!-- Technical Corner Accents -->
+        <div class="garage-bracket bracket-tl" aria-hidden="true"></div>
+        <div class="garage-bracket bracket-tr" aria-hidden="true"></div>
+        <div class="garage-bracket bracket-bl" aria-hidden="true"></div>
+        <div class="garage-bracket bracket-br" aria-hidden="true"></div>
+
+        <!-- Garage Threshold Bar -->
+        <div class="garage-threshold-bar">
+          <div class="threshold-stripes" aria-hidden="true"></div>
+          <div class="threshold-info mono">
+            <span>ACTIVE WORKSHOP &bull; DRIVEWAY ACCESS</span>
+            <span class="threshold-iracing">JRAD MOTORSPORT GARAGE</span>
+          </div>
+        </div>
+      </div>
+
       <!-- MX-5 CUP BLOCK -->
       <div class="class-block">
         <div class="class-head">
@@ -656,6 +691,147 @@
     if (isTouchDevice || window.innerWidth <= 860) {
       onScrollOrTouch();
     }
+  })();
+
+  // --- Garage Video Scroll Scrubber ---
+  (function initGarageScrubber() {
+    const video = document.getElementById('garageScrubVideo');
+    if (!video) return;
+
+    const SENSITIVITY = 0.8;
+    let prevScrollY = window.scrollY || window.pageYOffset || 0;
+    let targetTime = 0;
+    let isSeeking = false;
+    let hasCompleted = false;
+    let isAutoPlaying = false;
+
+    function markCompleted() {
+      if (hasCompleted) return;
+      hasCompleted = true;
+      isAutoPlaying = false;
+      video.pause();
+      if (video.duration) {
+        targetTime = video.duration;
+        video.currentTime = video.duration;
+      }
+    }
+
+    video.addEventListener('ended', markCompleted);
+
+    video.addEventListener('timeupdate', function() {
+      if (hasCompleted) return;
+      if (video.duration && video.currentTime >= video.duration - 0.08) {
+        markCompleted();
+      }
+    });
+
+    function seekVideo() {
+      if (hasCompleted || !video.duration || isNaN(video.duration)) return;
+      if (isSeeking) return;
+
+      if (Math.abs(video.currentTime - targetTime) > 0.01) {
+        isSeeking = true;
+        video.currentTime = targetTime;
+      }
+    }
+
+    video.addEventListener('seeked', function() {
+      isSeeking = false;
+      if (!hasCompleted && Math.abs(video.currentTime - targetTime) > 0.01) {
+        seekVideo();
+      }
+    });
+
+    function checkVisibilityAndProgress() {
+      if (hasCompleted) return;
+
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
+      const delta = currentScrollY - prevScrollY;
+      prevScrollY = currentScrollY;
+
+      if (!video.duration || isNaN(video.duration)) return;
+
+      const rect = video.getBoundingClientRect();
+      const winH = window.innerHeight || document.documentElement.clientHeight || 800;
+      const videoH = rect.height > 0 ? rect.height : (video.videoHeight || 600);
+
+      // entryProgress is 0 when the top of the video enters the bottom of the viewport (rect.top == winH),
+      // and reaches 1.0 when the entire video is fully inside the viewport (rect.bottom <= winH).
+      const entryProgress = Math.max(0, Math.min(1, (winH - rect.top) / videoH));
+      const halfDuration = video.duration * 0.5;
+
+      if (entryProgress < 1.0) {
+        // As video enters the frame, scrub up to the halfway mark (50% done by the time it is fully in view)
+        if (!isAutoPlaying) {
+          targetTime = entryProgress * halfDuration;
+          seekVideo();
+        }
+        return;
+      }
+
+      // Video is now fully in view: ensure it is at least halfway done
+      if (targetTime < halfDuration) {
+        targetTime = halfDuration;
+      }
+
+      // Automatically play and finish the remaining half as soon as the video is fully in view
+      if (!isAutoPlaying && !hasCompleted) {
+        isAutoPlaying = true;
+        // Ensure starting playhead is at least halfway if video was paused earlier
+        if (video.currentTime < halfDuration - 0.1) {
+          video.currentTime = halfDuration;
+        }
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function() {
+            // Fallback to manual scrub if autoplay is blocked
+            isAutoPlaying = false;
+          });
+        }
+      }
+
+      // If user continues scrolling forward, advance targetTime towards the end
+      if (delta > 0) {
+        const timeOffset = (delta / winH) * SENSITIVITY * video.duration;
+        targetTime = Math.min(video.duration, Math.max(targetTime, video.currentTime) + timeOffset);
+        if (!isAutoPlaying) {
+          seekVideo();
+        }
+        if (targetTime >= video.duration - 0.08) {
+          markCompleted();
+        }
+      }
+    }
+
+    // Window scroll event listener
+    window.addEventListener('scroll', checkVisibilityAndProgress, { passive: true });
+
+    // Only restart the animation if the page is reloaded or revisited
+    function restartAnimation() {
+      hasCompleted = false;
+      isAutoPlaying = false;
+      targetTime = 0;
+      prevScrollY = window.scrollY || window.pageYOffset || 0;
+      video.pause();
+      if (video.readyState >= 1) {
+        video.currentTime = 0;
+      }
+    }
+
+    video.addEventListener('loadedmetadata', function() {
+      if (!hasCompleted) {
+        video.currentTime = 0;
+        checkVisibilityAndProgress();
+      }
+    });
+
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) {
+        restartAnimation();
+      }
+    });
+
+    restartAnimation();
   })();
 </script>
 

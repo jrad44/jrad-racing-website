@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
@@ -86,6 +87,25 @@ app.get('/api/youtube-recent', async (req, res) => {
     latest: videos[0] || defaultVideos[0],
     items: videos.slice(0, 3)
   });
+});
+
+// Dynamic endpoint for serving garage video
+app.get('/api/garage-video', (req, res) => {
+  const assetsDir = path.join(__dirname, 'assets');
+  const rootDir = __dirname;
+  
+  // 1. Direct match
+  const preferred = path.join(assetsDir, 'garage-animation.mp4');
+  if (fs.existsSync(preferred)) {
+    return res.sendFile(preferred);
+  }
+
+  const rootVideo = path.join(rootDir, 'video.mp4');
+  if (fs.existsSync(rootVideo)) {
+    return res.sendFile(rootVideo);
+  }
+
+  res.status(404).send('Video not found');
 });
 
 // Serve static assets and HTML files

@@ -308,6 +308,158 @@
   }
 
   /* ---------- garage ---------- */
+  #garage{
+    position:relative;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 15%, rgba(62,203,109,0.06), transparent 70%),
+      radial-gradient(ellipse 55% 40% at 18% 32%, rgba(217,255,63,0.05), transparent 65%),
+      var(--asphalt-950);
+  }
+  .garage-video-container{
+    position:relative;
+    width:100%;
+    aspect-ratio:1700/1220;
+    max-height:720px;
+    margin-bottom:60px;
+    border:1px solid var(--line);
+    border-top:1px solid rgba(217,255,63,0.4);
+    border-bottom:1px solid rgba(62,203,109,0.4);
+    background:#0d1015;
+    box-shadow:
+      0 35px 80px -25px rgba(0,0,0,0.95),
+      0 0 55px -15px rgba(62,203,109,0.12),
+      0 0 55px -15px rgba(217,255,63,0.1);
+    overflow:hidden;
+    border-radius:var(--radius-sm);
+  }
+  .garage-scrub-video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    filter:contrast(1.05) saturate(1.06) brightness(0.97);
+  }
+
+  /* Environmental Vignette & Atmosphere Blending Layer */
+  .garage-atmosphere-overlay{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:2;
+    background:
+      radial-gradient(ellipse 94% 84% at 50% 50%, transparent 56%, rgba(16,18,21,0.45) 80%, rgba(16,18,21,0.95) 100%),
+      linear-gradient(to bottom, rgba(16,18,21,0.7) 0%, transparent 14%, transparent 80%, rgba(16,18,21,0.92) 100%),
+      linear-gradient(to right, rgba(16,18,21,0.55) 0%, transparent 8%, transparent 92%, rgba(16,18,21,0.55) 100%),
+      radial-gradient(circle at 16% 92%, rgba(217,255,63,0.08), transparent 36%),
+      radial-gradient(circle at 84% 92%, rgba(62,203,109,0.09), transparent 36%);
+  }
+
+  /* Paddock Bay HUD Bar */
+  .garage-hud-bar{
+    position:absolute;
+    top:0;left:0;right:0;
+    z-index:3;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 20px;
+    background:linear-gradient(to bottom, rgba(16,18,21,0.92) 0%, rgba(16,18,21,0.45) 75%, transparent 100%);
+    border-bottom:1px solid rgba(51,57,65,0.4);
+    pointer-events:none;
+  }
+  .hud-tag{
+    display:flex;
+    align-items:center;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--paper);
+  }
+  .hud-live-dot{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    margin-right:9px;
+    animation:hud-pulse 2.2s infinite ease-in-out;
+  }
+  @keyframes hud-pulse{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:0.4;transform:scale(0.85);}
+  }
+  .hud-fleet{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .hud-badge{
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:2px;
+    letter-spacing:0.05em;
+    font-weight:600;
+  }
+  .hud-badge.badge-mx5{
+    background:rgba(217,255,63,0.15);
+    color:var(--yellow);
+    border:1px solid rgba(217,255,63,0.4);
+  }
+  .hud-badge.badge-gt3{
+    background:rgba(62,203,109,0.15);
+    color:var(--green);
+    border:1px solid rgba(62,203,109,0.4);
+  }
+
+  /* Technical Corner Brackets */
+  .garage-bracket{
+    position:absolute;
+    width:14px;
+    height:14px;
+    z-index:3;
+    pointer-events:none;
+    border-color:rgba(255,255,255,0.3);
+    border-style:solid;
+  }
+  .bracket-tl{top:8px;left:8px;border-width:2px 0 0 2px;border-color:var(--yellow);}
+  .bracket-tr{top:8px;right:8px;border-width:2px 2px 0 0;border-color:var(--green);}
+  .bracket-bl{bottom:8px;left:8px;border-width:0 0 2px 2px;border-color:var(--yellow);}
+  .bracket-br{bottom:8px;right:8px;border-width:0 2px 2px 0;border-color:var(--green);}
+
+  /* Garage Threshold Bar */
+  .garage-threshold-bar{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    z-index:3;
+    padding:10px 20px 12px;
+    background:linear-gradient(to top, rgba(16,18,21,0.96) 0%, rgba(16,18,21,0.55) 75%, transparent 100%);
+    border-top:1px solid rgba(51,57,65,0.4);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    pointer-events:none;
+  }
+  .threshold-stripes{
+    height:3px;
+    width:100%;
+    opacity:0.65;
+    background:repeating-linear-gradient(-45deg, var(--yellow), var(--yellow) 8px, transparent 8px, transparent 16px);
+  }
+  .threshold-info{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.06em;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .threshold-iracing{
+    color:var(--paper);
+    opacity:0.85;
+  }
+
   .class-block{
     position:relative;
     margin-bottom:70px;
@@ -352,6 +504,10 @@
   .car-number.n-gt3{color:var(--green);}
 
   @media (max-width:760px){
+    .garage-hud-bar{padding:8px 12px;}
+    .hud-fleet{display:none;}
+    .garage-threshold-bar{padding:6px 12px 8px;}
+    .threshold-iracing{display:none;}
     .class-body{grid-template-columns:1fr;}
     .class-hero-img{border-right:0;border-bottom:1px solid var(--line);min-height:220px;}
     .hero-top{min-height:clamp(460px, 78vh, 620px);}
