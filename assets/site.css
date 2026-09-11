@@ -586,8 +586,11 @@
   }
   .about-photo{
     width:100%;
+    display:block;
+    object-fit:cover;
+    border-radius:var(--radius-sm);
     border:1px solid var(--line);
-    filter:grayscale(0.15);
+    box-shadow:0 12px 32px -8px rgba(0,0,0,0.65);
   }
   .about-text p{color:var(--muted);font-size:16.5px;max-width:60ch;}
   .about-text p+p{margin-top:16px;}
